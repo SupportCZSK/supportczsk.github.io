@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Úvodní stránka</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-align: center;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 0 0 10px 10px;
+            padding: 10px 40px;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+            margin-right: 60px;
+        }
+
+        nav a {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        main {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 100px; /* Ensure content starts below fixed header */
+            padding-bottom: 50px;
+        }
+
+        .about {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            max-width: 700px;
+            text-align: left;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .about h2, .about h3 {
+            color: #f8f8f8;
+        }
+
+        .about p, .about ul {
+            color: #ddd;
+            line-height: 1.6;
+        }
+
+        .about ul {
+            padding-left: 20px;
+        }
+
+        .about li {
+            margin-bottom: 10px;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Hamburger menu button */
+        .hamburger {
+            display: none;
+            font-size: 24px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        /* Mobile-specific styles */
+        @media (max-width: 600px) {
+            header {
+                padding: 10px 20px;
+                flex-wrap: wrap;
+                align-items: center;
+                flex-direction: column; /* Stack header items vertically */
+            }
+
+            .hamburger {
+                display: block;
+                position: absolute;
+                right: 20px;
+                top: 15px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+                margin: 0;
+            }
+
+            nav {
+                display: none; /* Hidden by default */
+                flex-direction: column;
+                width: 100%;
+                margin: 0;
+                padding: 10px 0;
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+            nav.active {
+                display: flex; /* Show when active */
+            }
+
+            nav a {
+                width: 100%;
+                text-align: center;
+                padding: 12px;
+                margin: 0;
+                border-radius: 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            }
+
+            nav a:last-child {
+                border-bottom: none;
+            }
+
+            main {
+                margin-top: 60px; /* Adjusted for smaller header */
+                transition: margin-top 0.3s ease; /* Smooth transition for margin */
+            }
+
+            .nav-open {
+                margin-top: 170px; /* Extra margin when nav is open */
+            }
+
+            .about {
+                padding: 20px;
+                margin: 10px;
+                max-width: 90%;
+            }
+
+            .about h2 {
+                font-size: 1.5em;
+            }
+
+            .about h3 {
+                font-size: 1.2em;
+            }
+
+            .about p, .about li {
+                font-size: 0.95em;
+            }
+
+            .highlight {
+                font-size: 0.9em;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Vítejte na naší podpoře</h1>
+        <button class="hamburger">☰</button>
+        <nav>
+            <a href="dum.html">Anonymní vstup</a>
+            <a href="podminky.html">Podmínky</a>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="about">
+            <h2>O naší podpoře</h2>
+            <p>Vítejte na našem webu – prostoru vytvořeném pro všechny, kteří potřebují podporu, pochopení nebo jen někoho, kdo je vyslechne. <strong>Chápeme, že ne každý má ve svém okolí někoho, komu by se mohl svěřit, a právě proto jsme tady my.</strong></p>
+
+            <h3>Bezpečnost a anonymita na prvním místě</h3>
+            <ul>
+                <li><strong>Nemusíte se registrovat</strong> – Můžete s námi komunikovat anonymně.</li>
+                <li><strong>Chráněná komunikace</strong> – Vaše zprávy nejsou veřejné a vidí je pouze naše podpora.</li>
+                <li><strong>Žádné sdílení osobních údajů</strong> – Nevyžadujeme žádné citlivé informace.</li>
+            </ul>
+
+            <h3>🤝 Podpora bez předsudků – jsme tu pro každého</h3>
+            <ul>
+                <li><strong>Žádné posuzování</strong> – Můžete se svěřit se svými myšlenkami a pocity beze strachu.</li>
+                <li><strong>Empatie a pochopení</strong> – Naše podpora se skládá z lidí, kteří jsou připraveni vám pomoci.</li>
+                <li><strong>Pomoc a rady</strong> – Poskytneme vám morální podporu a směr, kam se obrátit.</li>
+            </ul>
+
+            <h3>💙 Nejste na to sami – my vás vyslechneme</h3>
+            <p>Život může být složitý a někdy se člověk cítí, jako by nikdo nerozuměl tomu, co prožívá. Ale <strong>vy nejste sami</strong>. Každý si zaslouží být vyslyšen a pochopen.</p>
+
+            <p class="highlight">🌟 <strong>Náš cíl?</strong> Vytvořit bezpečný prostor, kde každý může najít podporu, úlevu a pocit, že na své starosti není sám.</p>
+        </section>
+    </main>
+
+    <script>
+        // JavaScript for hamburger menu
+        const hamburger = document.querySelector('.hamburger');
+        const nav = document.querySelector('nav');
+        const main = document.querySelector('main');
+
+        hamburger.addEventListener('click', () => {
+            nav.classList.toggle('active');
+            main.classList.toggle('nav-open'); // Adjust main margin when nav is open
+            hamburger.textContent = nav.classList.contains('active') ? '✖' : '☰'; // Change icon
+        });
+
+        // Close nav when clicking a link
+        nav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                nav.classList.remove('active');
+                main.classList.remove('nav-open');
+                hamburger.textContent = '☰'; // Reset icon
+            });
+        });
+    </script>
+</body>
+</html>

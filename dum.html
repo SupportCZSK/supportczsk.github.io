@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podpora</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+        }
+        /* Styl pro pohyblivé okno */
+        .development-notice {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            font-size: 16px;
+            z-index: 1002;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(20px);
+            }
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            max-width: 400px;
+            width: 90%;
+        }
+        button {
+            background: #ff6b6b;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background: #e63946;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+        }
+        .modal {
+            display: none;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            color: black;
+            width: 90%;
+            max-width: 400px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1001;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+            position: relative;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-top: 5px;
+        }
+        textarea {
+            resize: none;
+        }
+        .char-counter {
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
+            font-size: 12px;
+            color: gray;
+        }
+        @media (max-width: 600px) {
+            .development-notice {
+                font-size: 14px;
+                padding: 8px 15px;
+            }
+            .container {
+                width: 95%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Pohyblivé okno s upozorněním -->
+    <div class="development-notice">
+        Tento web je stále ve vývoji
+    </div>
+
+    <div class="container">
+        <h1>Vítejte na stránce podpory</h1>
+        <button id="support-btn">Potřebuji podporu</button>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="modal" id="support-form">
+        <h2>Vyberte typ podpory</h2>
+        <div id="support-options">
+            <button class="support-type-btn" data-support-type="Obecná podpora">Obecná podpora</button>
+            <button class="support-type-btn" data-support-type="Technická podpora">Technická podpora</button>
+            <button class="support-type-btn" data-support-type="Kritická podpora">Kritická podpora</button>
+            <button class="support-type-btn" data-support-type="Emoční podpora">Emoční podpora</button>
+            <button class="support-type-btn" data-support-type="Zdravotní podpora">Zdravotní podpora</button>
+            <button class="support-type-btn" data-support-type="Vztahy a láska">Vztahy a láska</button>
+        </div>
+    </div>
+
+    <div class="modal" id="support-details-form">
+        <h2>Formulář</h2>
+        <p>Tento formulář nám pomůže k tomu, abychom vám poskytli co nejrychlejší a nejefektivnější podporu.
+           Vaše soukromí je pro nás prioritou a proto vše, co sem napíšete, uvidíte jenom vy a naše podpora a nebude to 
+           sdíleno třetím stranám.
+        </p>
+        <div class="form-group">
+            <label for="user-name">Vaše jméno:</label>
+            <input type="text" id="user-name" required>
+        </div>
+        <div class="form-group">
+            <label for="user-issue">Popište svůj problém:</label>
+            <textarea id="user-issue" maxlength="1000" required></textarea>
+            <div class="char-counter" id="char-counter">0 / 1000</div>
+        </div>
+        <button id="submit-support">Vytvořit podporu</button>
+        <div class="loader" id="loader" style="display:none;">Načítání...</div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWCW9o5njLRCOAPJHSZoi_SEG0vJ0gI60",
+            authDomain: "supportczsk-34edc.firebaseapp.com",
+            databaseURL: "https://supportczsk-34edc-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "supportczsk-34edc",
+            storageBucket: "supportczsk-34edc.firebasestorage.app",
+            messagingSenderId: "673199842238",
+            appId: "1:673199842238:web:4e7d3a0f9084a59218cfef",
+            measurementId: "G-ZDYD4DNM33"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.database();
+
+        const overlay = document.getElementById("overlay");
+        const supportBtn = document.getElementById("support-btn");
+        const supportForm = document.getElementById("support-form");
+        const supportDetailsForm = document.getElementById("support-details-form");
+        const submitSupport = document.getElementById("submit-support");
+
+        // Generování nebo načtení userID
+        const userID = localStorage.getItem("userId") || "user_" + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem("userId", userID);
+
+        let selectedSupportType = "";
+
+        // Kontrola, zda už existuje chat, při kliknutí na tlačítko "Potřebuji podporu"
+        supportBtn.addEventListener("click", async () => {
+            try {
+                const snapshot = await db.ref("chats_list").orderByChild("userId").equalTo(userID).once("value");
+                if (snapshot.exists()) {
+                    // Pokud chat existuje, přesměruj přímo na chat.html
+                    const chatData = Object.values(snapshot.val())[0];
+                    window.location.href = `chat.html?id=${encodeURIComponent(chatData.chatID)}`;
+                } else {
+                    // Pokud chat neexistuje, zobraz nabídku s typy podpory
+                    overlay.style.display = "block";
+                    supportForm.style.display = "block";
+                }
+            } catch (error) {
+                console.error("Chyba při kontrole podpory:", error);
+                alert("Došlo k chybě při kontrole stavu podpory. Zkuste to znovu.");
+            }
+        });
+
+        // Výběr typu podpory
+        document.querySelectorAll(".support-type-btn").forEach(button => {
+            button.addEventListener("click", function() {
+                selectedSupportType = this.getAttribute("data-support-type");
+                supportForm.style.display = "none";
+                supportDetailsForm.style.display = "block";
+            });
+        });
+
+        // Odeslání formuláře a vytvoření nového chatu
+        submitSupport.addEventListener("click", function() {
+            const userName = document.getElementById("user-name").value.trim();
+            const userIssue = document.getElementById("user-issue").value.trim();
+
+            if (!userName || !userIssue) {
+                alert("Vyplňte všechna pole!");
+                return;
+            }
+
+            const chatID = "chat_" + Math.random().toString(36).substr(2, 9);
+            const createdAt = Date.now();
+
+            // Uložení dat do databáze
+            db.ref().update({
+                [`chats_list/${chatID}`]: { 
+                    chatID, 
+                    userId: userID, 
+                    userName, 
+                    userIssue, 
+                    supportType: selectedSupportType, 
+                    createdAt
+                },
+                [`podpora_chats/${chatID}`]: { 
+                    chatID, 
+                    userId: userID, 
+                    userName, 
+                    userIssue, 
+                    supportType: selectedSupportType, 
+                    createdAt
+                }
+            }).then(() => {
+                window.location.href = `chat.html?id=${encodeURIComponent(chatID)}`;
+            }).catch(error => {
+                console.error("Chyba při vytváření ticketu:", error);
+                alert("Došlo k chybě při vytváření ticketu. Zkuste to znovu.");
+            });
+        });
+
+        // Počítadlo znaků v textovém poli
+        const userIssueInput = document.getElementById("user-issue");
+        const charCounter = document.getElementById("char-counter");
+
+        charCounter.textContent = `0 / 1000`;
+
+        userIssueInput.addEventListener("input", function () {
+            const maxLength = 1000;
+            const currentLength = this.value.length;
+            charCounter.textContent = `${currentLength} / ${maxLength}`;
+        });
+    </script>
+</body>
+</html>

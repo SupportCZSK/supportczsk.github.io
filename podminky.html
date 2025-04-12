@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podmínky služby</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-align: left;
+        }
+
+        /* Navigační panel */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 0 0 10px 10px;
+            padding: 10px 40px;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+            margin-right: 60px;
+        }
+
+        nav a {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        /* Prostor pro obsah pod navigačním panelem */
+        .content {
+            margin-top: 140px; /* Zvětšení mezery mezi navigačním panelem a obsahem */
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-bottom: 50px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.2); /* Světlejší pozadí */
+            padding: 30px;
+            border-radius: 12px;
+            backdrop-filter: blur(15px);
+            max-width: 800px;
+            width: 90%;
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1); /* Vylepšený stín */
+        }
+
+        h2, h3 {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); /* Efekt stínu */
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 1em;
+            text-align: justify;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); /* Stín pro text */
+        }
+
+        /* Nový styl pro poslední úpravu */
+        .last-modified {
+            font-size: 1.1em;
+            color: #ffffff;
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 30px;
+        }
+
+        /* Animace pro sekce */
+        .section {
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Úprava pro odkazy */
+        .section a {
+            color: #ff6f61;
+            text-decoration: none;
+            transition: color 0.3s ease, text-decoration 0.3s ease;
+        }
+
+        .section a:hover {
+            color: #d84b3b;
+            text-decoration: underline;
+        }
+
+        /* Tlačítka */
+        .button-container button {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .button-container button:hover {
+            background-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-5px);
+        }
+
+        /* Navigační tlačítka pro přechod mezi sekcemi */
+        .nav-buttons {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .nav-buttons a {
+            padding: 12px 25px;
+            background-color: #ff6f61;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .nav-buttons a:hover {
+            background-color: #d84b3b;
+            transform: translateY(-5px);
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Navigační panel -->
+    <header>
+        <h1>Podmínky</h1>
+        <nav>
+            <a href="index.html">Zpět</a>
+        </nav>
+    </header>
+
+    <div class="content">
+        <div class="container">
+            <h2>Podmínky služby</h2>
+
+            <!-- Poslední úprava přímo pod nadpisem -->
+            <div class="last-modified">
+                <p>Poslední úprava: 23. března 2025</p>
+            </div>
+
+            <div class="section" id="section1">
+                <h3>1. Přijetí podmínek služby</h3>
+                <p>Používáním tohoto webu (dále jen „Služby“) souhlasíte s těmito podmínkami služby (dále jen „Podmínky“). Pokud s těmito Podmínkami nesouhlasíte, nemáte oprávnění používat naše Služby.</p>
+            </div>
+
+            <div class="section">
+                <h3>2. Účel služby</h3>
+                <p>Tento web je určen pro pomoc uživatelům, kteří se nacházejí v obtížných situacích a hledají pomoc nebo poradenství. Web poskytuje nástroje pro odesílání žádostí o pomoc (tikety), komunikaci s podporou a sledování statusu vašich žádostí.</p>
+            </div>
+
+            <div class="section">
+                <h3>3. Použití služby</h3>
+                <p>Služby lze využívat pouze pro zákonné účely, jako je získávání podpory a pomoc při problémech. Zakázáno je použití Služby k šíření nelegálního, urážlivého, škodlivého nebo neetického obsahu. Jakákoli činnost, která by mohla poškodit ostatní uživatele nebo webové stránky, je přísně zakázána.</p>
+            </div>
+
+            <div class="section">
+                <h3>4. Odpovědnost uživatele</h3>
+                <p>Uživatelé jsou plně odpovědní za všechny aktivity prováděné jejich účtem. Jakékoliv porušení těchto podmínek může vést k dočasnému nebo trvalému zablokování účtu. Uživatelé jsou povinni zdržet se jakýchkoli aktivit, které by mohly poškodit jiného uživatele nebo službu.</p>
+            </div>
+
+            <div class="section">
+                <h3>5. Změny podmínek</h3>
+                <p>Vyhrazujeme si právo aktualizovat nebo měnit tyto Podmínky kdykoli. Změny budou zveřejněny na stránce s Podmínkami služby. Doporučujeme pravidelně kontrolovat tuto stránku. Pokračující používání Služeb po změnách znamená souhlas s novými podmínkami.</p>
+            </div>
+
+            <div class="section">
+                <h3>6. Odpovědnost a omezení</h3>
+                <p>Tento web poskytuje Služby „jak jsou“, bez jakýchkoli záruk. Nezaručujeme, že Služby budou vždy dostupné nebo bez chyb. Nepřebíráme odpovědnost za žádné přímé, nepřímé nebo následné škody vyplývající z používání našich Služeb.</p>
+            </div>
+
+            <div class="section">
+                <h3>7. Spory a rozhodčí řízení</h3>
+                <p>V případě sporu mezi námi a uživatelem se strany dohodly na rozhodčím řízení, které proběhne individuálně, nikoli jako hromadná žaloba. Tento postup je zaměřen na rychlé a efektivní vyřešení problémů.</p>
+            </div>
+
+            <div class="section">
+                <h3>8. Použití obsahu a intelektuální vlastnictví</h3>
+                <p>Veškerý obsah na tomto webu, včetně textů, obrázků, grafiky a softwaru, je chráněn autorským právem a patří nám nebo našim partnerům. Obsah může být použit pouze pro osobní účely nebo v souladu s pokyny, které jsme zveřejnili.</p>
+            </div>
+
+            <div class="section">
+                <h3>9. Práva a povinnosti služby</h3>
+                <p>Vyhrazujeme si právo zrušit nebo omezit přístup k Službám, a to bez předchozího upozornění, pokud se domníváme, že došlo k porušení těchto Podmínek. Můžeme také upravit nebo změnit Služby, včetně funkcionalit a obsahu.</p>
+            </div>
+
+            <div class="section">
+                <h3>10. Ochrana dětí</h3>
+                <p>Naše Služby nejsou určeny pro osoby mladší 13 let. Pokud máte méně než 13 let, musíte mít souhlas rodičů nebo zákonného zástupce, aby vám umožnili přístup k Službám.</p>
+            </div>
+
+            <div class="section">
+                <h3>12. Úprava podmínek</h3>
+                <p>Tento dokument může být aktualizován nebo změněn, a to v závislosti na vývoji Služeb nebo právních požadavcích. Vždy vás budeme informovat o změnách na této stránce.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
