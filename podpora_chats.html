@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Podpora</title>
+    <title>SupportCZSK</title>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
 
@@ -86,7 +86,6 @@
             color: #ddd;
         }
 
-        /* Zpráva při žádných výsledcích */
         #noResultsMessage {
             display: none;
             text-align: center;
@@ -94,7 +93,6 @@
             color: #ddd;
         }
 
-        /* Modal okno */
         .modal {
             display: none;
             position: fixed;
@@ -167,7 +165,6 @@
         </div>
     </div>
 
-    <!-- Modal pro informace o uživateli -->
     <div id="chatModal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">×</span>
@@ -180,7 +177,6 @@
     </div>
 
     <script>
-        // Firebase konfigurace
         const firebaseConfig = {
             apiKey: "AIzaSyBWCW9o5njLRCOAPJHSZoi_SEG0vJ0gI60",
             authDomain: "supportczsk-34edc.firebaseapp.com",
@@ -199,14 +195,12 @@
         const noResultsMessage = document.getElementById("noResultsMessage");
         const chatsRef = db.ref("podpora_chats");
 
-        // Uložení původního seznamu chatů pro filtrování
         let allChats = [];
 
-        // Načítání seznamu chatů
         chatsRef.on("value", snapshot => {
-            chatList.innerHTML = ""; // Vyčistíme seznam, ale zachováme noResultsMessage
-            chatList.appendChild(noResultsMessage); // Znovu přidáme zprávu o žádných výsledcích
-            allChats = []; // Vyčistíme pole při každé aktualizaci
+            chatList.innerHTML = "";
+            chatList.appendChild(noResultsMessage);
+            allChats = [];
 
             if (snapshot.exists()) {
                 snapshot.forEach(childSnapshot => {
@@ -223,14 +217,12 @@
                         <button class="options-btn" onclick="openOptions(event, '${chatId}')">⋮</button>
                     `;
 
-                    // Přidání eventu na kliknutí, který přesměruje na chat.html s chatId
                     chatElement.onclick = function() {
                         window.location.href = `chat_podpora.html?id=${chatId}`;
                     };
 
                     chatList.appendChild(chatElement);
 
-                    // Uložení chatu do pole pro filtrování
                     allChats.push({
                         element: chatElement,
                         userName: userName.toLowerCase(),
@@ -239,11 +231,9 @@
                 });
             }
 
-            // Po načtení chatů provedeme filtrování podle aktuálního obsahu vyhledávacího pole
             filterChats();
         });
 
-        // Funkce pro filtrování chatů
         function filterChats() {
             const searchInput = document.getElementById("search").value.toLowerCase();
             let visibleChatsCount = 0;
@@ -254,23 +244,20 @@
                 if (matchesSearch) visibleChatsCount++;
             });
 
-            // Zobrazení/skrytí zprávy "Žádné chaty neodpovídají hledání"
             noResultsMessage.style.display = visibleChatsCount === 0 && allChats.length > 0 ? "block" : "none";
         }
 
         function openOptions(event, chatId) {
-            event.stopPropagation(); // Zabrání kliknutí na celý chat
+            event.stopPropagation();
 
             db.ref(`podpora_chats/${chatId}`).once("value", snapshot => {
                 if (snapshot.exists()) {
                     const chatData = snapshot.val();
 
-                    // Načtení dat z Firebase
                     document.getElementById("modalUserName").textContent = chatData.userName || "Neznámý uživatel";
                     document.getElementById("modalSupportType").textContent = chatData.supportType || "Neznámý typ podpory";
                     document.getElementById("modalUserInfo").textContent = chatData.userIssue || "Žádné informace";
 
-                    // Zobrazení data vytvoření
                     const createdAt = chatData.createdAt;
                     if (createdAt) {
                         const date = new Date(createdAt);
@@ -286,7 +273,6 @@
                         document.getElementById("modalCreatedAt").textContent = "Není k dispozici";
                     }
 
-                    // Zobrazení modálního okna
                     document.getElementById("chatModal").style.display = "flex";
                 } else {
                     alert("Chyba: Data nebyla nalezena.");
@@ -297,7 +283,7 @@
         }
 
         function closeModal() {
-            document.getElementById("chatModal").style.display = "none"; // Zavři modal
+            document.getElementById("chatModal").style.display = "none";
         }
     </script>
 </body>

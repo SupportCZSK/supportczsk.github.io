@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrátorský Panel</title>
+    <title>SupportCZSK</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -129,7 +129,6 @@
             const password = document.getElementById('password').value;
             const errorText = document.getElementById('login-error');
 
-            // Příkladově uživatelé s přihlašovacími údaji
             const users = [
                 { "username": "Danek", "password": "Danek1234567", "rank": "Owner" },
                 { "username": "User1", "password": "userpass", "rank": "Supporter" },
@@ -154,7 +153,6 @@
             }
         }
 
-        // Zobrazení příkazů z Firebase (toto je stále aktivní, pokud chceš zrušit i to, odstraň kód níže)
         firebase.database().ref('commands').on('child_added', function(snapshot) {
             const commandData = snapshot.val();
             const outputDiv = document.getElementById('output');

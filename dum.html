@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Podpora</title>
+    <title>SupportCZSK</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -17,7 +17,6 @@
             height: 100vh;
             color: white;
         }
-        /* Styl pro pohyblivé okno */
         .development-notice {
             position: fixed;
             top: 20px;
@@ -127,7 +126,6 @@
     </style>
 </head>
 <body>
-    <!-- Pohyblivé okno s upozorněním -->
     <div class="development-notice">
         Tento web je stále ve vývoji
     </div>
@@ -195,22 +193,18 @@
         const supportDetailsForm = document.getElementById("support-details-form");
         const submitSupport = document.getElementById("submit-support");
 
-        // Generování nebo načtení userID
         const userID = localStorage.getItem("userId") || "user_" + Math.random().toString(36).substr(2, 9);
         localStorage.setItem("userId", userID);
 
         let selectedSupportType = "";
 
-        // Kontrola, zda už existuje chat, při kliknutí na tlačítko "Potřebuji podporu"
         supportBtn.addEventListener("click", async () => {
             try {
                 const snapshot = await db.ref("chats_list").orderByChild("userId").equalTo(userID).once("value");
                 if (snapshot.exists()) {
-                    // Pokud chat existuje, přesměruj přímo na chat.html
                     const chatData = Object.values(snapshot.val())[0];
                     window.location.href = `chat.html?id=${encodeURIComponent(chatData.chatID)}`;
                 } else {
-                    // Pokud chat neexistuje, zobraz nabídku s typy podpory
                     overlay.style.display = "block";
                     supportForm.style.display = "block";
                 }
@@ -220,7 +214,6 @@
             }
         });
 
-        // Výběr typu podpory
         document.querySelectorAll(".support-type-btn").forEach(button => {
             button.addEventListener("click", function() {
                 selectedSupportType = this.getAttribute("data-support-type");
@@ -229,7 +222,6 @@
             });
         });
 
-        // Odeslání formuláře a vytvoření nového chatu
         submitSupport.addEventListener("click", function() {
             const userName = document.getElementById("user-name").value.trim();
             const userIssue = document.getElementById("user-issue").value.trim();
@@ -242,7 +234,6 @@
             const chatID = "chat_" + Math.random().toString(36).substr(2, 9);
             const createdAt = Date.now();
 
-            // Uložení dat do databáze
             db.ref().update({
                 [`chats_list/${chatID}`]: { 
                     chatID, 
@@ -268,7 +259,6 @@
             });
         });
 
-        // Počítadlo znaků v textovém poli
         const userIssueInput = document.getElementById("user-issue");
         const charCounter = document.getElementById("char-counter");
 

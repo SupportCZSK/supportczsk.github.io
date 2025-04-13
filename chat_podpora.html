@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Podpora</title>
+    <title>Support CZSK</title>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
     <style>
@@ -134,7 +134,7 @@
         button:hover {
             background: #1e88e5;
         }
-        /* Styl pro ikonu informací */
+
         .info-icon {
             position: absolute;
             top: 20px;
@@ -155,7 +155,7 @@
         .info-icon:hover {
             background: rgba(255, 255, 255, 0.5);
         }
-        /* Modal okno */
+
         .modal {
             display: none;
             position: fixed;
@@ -214,7 +214,6 @@
 <body>
     <div class="chat-container">
         <h2>Podpora Chat</h2>
-        <!-- Ikona informací -->
         <div class="info-icon" onclick="openInfoModal()">i</div>
         <div id="messages"></div>
         <div class="typing-indicator" id="typingIndicator">Píše...</div>
@@ -224,7 +223,6 @@
         </div>
     </div>
 
-    <!-- Modal pro informace o ticketu -->
     <div id="infoModal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close" onclick="closeInfoModal()">×</span>
@@ -236,7 +234,6 @@
         </div>
     </div>
 
-    <!-- Modal pro zprávu o převzetí ticketu -->
     <div id="takenModal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close" onclick="closeTakenModal()">×</span>
@@ -245,7 +242,6 @@
         </div>
     </div>
 
-    <!-- Modal pro chybovou zprávu při chybějícím jménu -->
     <div id="errorModal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close" onclick="closeErrorModal()">×</span>
@@ -255,7 +251,6 @@
     </div>
 
     <script>
-        // Firebase konfigurace
         const firebaseConfig = {
             apiKey: "AIzaSyBWCW9o5njLRCOAPJHSZoi_SEG0vJ0gI60",
             authDomain: "supportczsk-34edc.firebaseapp.com",
@@ -270,14 +265,11 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Pevné ID pro podpůrčí
-        const userId = "support"; // Podpora má pevné ID
+        const userId = "support";
 
-        // Získání ID chatu z URL
         const urlParams = new URLSearchParams(window.location.search);
         const chatID = urlParams.get("id");
 
-        // Kontrola, zda existuje chatID, pokud ne, přesměrování zpět
         if (!chatID) {
             alert("Chyba: Chat ID nebylo nalezeno!");
             window.location.href = "podpora.html";
@@ -286,7 +278,6 @@
         const messagesRef = db.ref("chats/" + chatID);
         const chatInfoRef = db.ref(`podpora_chats/${chatID}`);
 
-        // Posílání zpráv
         function sendMessage() {
             const messageInput = document.getElementById("messageInput");
             const message = messageInput.value.trim();
@@ -297,29 +288,24 @@
                 return;
             }
 
-            // Kontrola, zda zpráva začíná na /převzítchat
             if (message.toLowerCase().startsWith("/převzítchat")) {
-                const text = message.substring("/převzítchat".length).trim(); // Extrahování textu za příkazem
+                const text = message.substring("/převzítchat".length).trim();
                 if (!text) {
                     document.getElementById("errorMessage").textContent = "Musíte ještě zadat vaše jméno.";
                     document.getElementById("errorModal").style.display = "flex";
                     return;
                 }
 
-                // Kontrola, zda už ticket byl převzat
                 chatInfoRef.once("value", snapshot => {
                     const chatData = snapshot.val();
                     if (chatData && chatData.takenBy) {
-                        // Pokud už byl ticket převzat, zobrazí se modální okno
                         document.getElementById("takenMessage").textContent = `Tento ticket už převzal ${chatData.takenBy}`;
                         document.getElementById("takenModal").style.display = "flex";
                     } else {
-                        // Jinak se ticket převezme poprvé
                         chatInfoRef.update({
-                            takenBy: text // Uložení informace o převzetí do podpora_chats
+                            takenBy: text
                         });
 
-                        // Uložení systémové zprávy do chatu
                         messagesRef.push({
                             text: `Tento ticket převzal ${text}`,
                             userId: userId,
@@ -328,28 +314,25 @@
                             timestamp: Date.now()
                         });
                     }
-                    messageInput.value = ""; // Vyčistí input
+                    messageInput.value = "";
                 }).catch(error => {
                     console.error("Chyba při kontrole převzetí ticketu:", error);
                     document.getElementById("errorMessage").textContent = "Došlo k chybě při zpracování příkazu.";
                     document.getElementById("errorModal").style.display = "flex";
                 });
             } else {
-                // Odeslání běžné zprávy
                 messagesRef.push({
                     text: message,
                     userId: userId,
-                    isSupport: true, // Podpora odesílá zprávu
+                    isSupport: true,
                     timestamp: Date.now()
                 });
-                messageInput.value = ""; // Vyčistí input
+                messageInput.value = "";
             }
         }
 
-        // Načítání zpráv a rozdělení podle uživatele/podpory
         messagesRef.on("child_added", snapshot => {
             const msg = snapshot.val();
-            // Kontrola, zda zpráva má text (aby se nezobrazily zprávy s undefined)
             if (!msg.text) return;
 
             const msgElement = document.createElement("div");
@@ -357,35 +340,29 @@
 
             const messageTime = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-            // Kontrola, zda jde o systémovou zprávu
             if (msg.isSystemMessage) {
                 msgElement.classList.add("system-message");
                 msgElement.innerHTML = `<p>${msg.text}</p>`;
             } else {
                 msgElement.innerHTML = `<p>${msg.text}</p><span class="time">${messageTime}</span>`;
-                // Rozdělení zpráv podle odesílatele
                 if (msg.isSupport) {
-                    msgElement.classList.add("my-message"); // Zprávy od podpory (vpravo pro podpůrčí)
+                    msgElement.classList.add("my-message");
                 } else {
-                    msgElement.classList.add("other-message"); // Zprávy od uživatele (vlevo pro podpůrčí)
+                    msgElement.classList.add("other-message");
                 }
             }
 
             document.getElementById("messages").appendChild(msgElement);
 
-            // Automatický scroll dolů
             document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
         });
 
-        // Indikátor "Píše někdo"
         const typingIndicator = document.getElementById("typingIndicator");
 
-        // Ukázání indikátoru "Píše někdo"
         function showTypingIndicator(isTyping) {
             typingIndicator.style.display = isTyping ? 'block' : 'none';
         }
 
-        // Simulace "píše někdo"
         let typingTimeout;
         document.getElementById("messageInput").addEventListener("input", function() {
             clearTimeout(typingTimeout);
@@ -395,27 +372,23 @@
             }, 2000);
         });
 
-        // Přidání funkce pro odeslání zprávy pomocí Enter
         const messageInput = document.getElementById("messageInput");
         messageInput.addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
-                event.preventDefault(); // Zabrání vícenásobnému odeslání
+                event.preventDefault();
                 sendMessage();
             }
         });
 
-        // Funkce pro otevření modálního okna s informacemi o ticketu
         function openInfoModal() {
             db.ref(`podpora_chats/${chatID}`).once("value", snapshot => {
                 if (snapshot.exists()) {
                     const chatData = snapshot.val();
 
-                    // Načtení dat z Firebase
                     document.getElementById("modalUserName").textContent = chatData.userName || "Neznámý uživatel";
                     document.getElementById("modalSupportType").textContent = chatData.supportType || "Není uveden typ ticketu";
                     document.getElementById("modalUserIssue").textContent = chatData.userIssue || "Žádné podrobnosti";
 
-                    // Zobrazení data vytvoření
                     const createdAt = chatData.createdAt;
                     if (createdAt) {
                         const date = new Date(createdAt);
@@ -431,7 +404,6 @@
                         document.getElementById("modalCreatedAt").textContent = "Není k dispozici";
                     }
 
-                    // Zobrazení modálního okna
                     document.getElementById("infoModal").style.display = "flex";
                 } else {
                     document.getElementById("errorMessage").textContent = "Data ticketu nebyla nalezena.";
@@ -444,17 +416,14 @@
             });
         }
 
-        // Funkce pro zavření modálního okna s informacemi
         function closeInfoModal() {
             document.getElementById("infoModal").style.display = "none";
         }
 
-        // Funkce pro zavření modálního okna s informací o převzetí
         function closeTakenModal() {
             document.getElementById("takenModal").style.display = "none";
         }
 
-        // Funkce pro zavření modálního okna s chybovou zprávou
         function closeErrorModal() {
             document.getElementById("errorModal").style.display = "none";
         }

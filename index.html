@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Úvodní stránka</title>
+    <title>SupportCZSK</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -61,7 +61,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin-top: 100px; /* Ensure content starts below fixed header */
+            margin-top: 100px;
             padding-bottom: 50px;
         }
 
@@ -117,7 +117,6 @@
             100% { transform: scale(1); }
         }
 
-        /* Hamburger menu button */
         .hamburger {
             display: none;
             font-size: 24px;
@@ -128,13 +127,12 @@
             padding: 10px;
         }
 
-        /* Mobile-specific styles */
         @media (max-width: 600px) {
             header {
                 padding: 10px 20px;
                 flex-wrap: wrap;
                 align-items: center;
-                flex-direction: column; /* Stack header items vertically */
+                flex-direction: column;
             }
 
             .hamburger {
@@ -150,7 +148,7 @@
             }
 
             nav {
-                display: none; /* Hidden by default */
+                display: none;
                 flex-direction: column;
                 width: 100%;
                 margin: 0;
@@ -159,7 +157,7 @@
             }
 
             nav.active {
-                display: flex; /* Show when active */
+                display: flex;
             }
 
             nav a {
@@ -176,12 +174,12 @@
             }
 
             main {
-                margin-top: 60px; /* Adjusted for smaller header */
-                transition: margin-top 0.3s ease; /* Smooth transition for margin */
+                margin-top: 60px;
+                transition: margin-top 0.3s ease;
             }
 
             .nav-open {
-                margin-top: 170px; /* Extra margin when nav is open */
+                margin-top: 170px;
             }
 
             .about {
@@ -214,7 +212,7 @@
         <h1>Vítejte na naší podpoře</h1>
         <button class="hamburger">☰</button>
         <nav>
-            <a href="dum.html">Anonymní vstup</a>
+            <a href="dum.html">Podpora</a>
             <a href="podminky.html">Podmínky</a>
         </nav>
     </header>
@@ -246,23 +244,21 @@
     </main>
 
     <script>
-        // JavaScript for hamburger menu
         const hamburger = document.querySelector('.hamburger');
         const nav = document.querySelector('nav');
         const main = document.querySelector('main');
 
         hamburger.addEventListener('click', () => {
             nav.classList.toggle('active');
-            main.classList.toggle('nav-open'); // Adjust main margin when nav is open
-            hamburger.textContent = nav.classList.contains('active') ? '✖' : '☰'; // Change icon
+            main.classList.toggle('nav-open');
+            hamburger.textContent = nav.classList.contains('active') ? '✖' : '☰';
         });
 
-        // Close nav when clicking a link
         nav.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 nav.classList.remove('active');
                 main.classList.remove('nav-open');
-                hamburger.textContent = '☰'; // Reset icon
+                hamburger.textContent = '☰';
             });
         });
     </script>
