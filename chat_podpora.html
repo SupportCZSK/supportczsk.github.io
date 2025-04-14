@@ -6,141 +6,50 @@
     <title>Support CZSK</title>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background: linear-gradient(to right, #667eea, #764ba2);
-            text-align: center;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            overflow: hidden;
         }
+
         .chat-container {
-            width: 90%;
-            max-width: 600px;
+            width: 100%;
+            height: 100vh;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            position: relative;
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 0;
+            box-shadow: none;
+            backdrop-filter: blur(12px);
             color: white;
-        }
-        #messages {
-            height: 360px;
-            overflow-y: auto;
-            border-radius: 5px;
-            padding: 5px;
-            text-align: left;
-            background: rgba(255, 255, 255, 0.1);
             display: flex;
             flex-direction: column;
-            gap: 30px;
-        }
-        .message {
-            padding: 8px;
-            border-radius: 8px;
-            max-width: 80%;
-            word-wrap: break-word;
-            font-size: 14px;
             position: relative;
-            line-height: 1.4;
         }
-        .my-message {
-            background: #42a5f5;
-            color: white;
-            align-self: flex-end;
-            padding: 1px 10px;
-            max-width: 70%;
-            border-radius: 8px;
-            font-size: 14px;
-            word-wrap: break-word;
-        }
-        .other-message {
-            background: #bbdefb;
-            color: black;
-            align-self: flex-start;
-            padding: 1px 10px;
-            max-width: 70%;
-            border-radius: 8px;
-            font-size: 14px;
-            word-wrap: break-word;
-        }
-        .system-message {
-            background: rgba(255, 255, 255, 0.3);
-            color: white;
-            align-self: center;
-            padding: 5px 10px;
-            border-radius: 8px;
-            font-size: 14px;
-            word-wrap: break-word;
-            text-align: center;
-            margin: 10px 0;
-        }
-        .time {
-            font-size: 12px;
-            color: gray;
-            position: absolute;
-            bottom: -18px;
-            left: 1px;
-        }
-        .typing-indicator {
-            font-size: 14px;
-            color: #42a5f5;
-            font-style: italic;
-            display: none;
-            margin-top: 5px;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .input-container {
+
+        .chat-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            margin-top: 10px;
-        }
-        input {
-            flex-grow: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            outline: none;
-            font-size: 16px;
-            max-width: 80%;
-            background: rgba(255, 255, 255, 0.3);
-            color: white;
-        }
-        button {
-            width: auto;
             padding: 10px 20px;
-            margin-left: 10px;
-            background: #42a5f5;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
-        button:hover {
-            background: #1e88e5;
+
+        .chat-header h2 {
+            margin: 0;
+            font-size: 22px;
         }
 
         .info-icon {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             background: rgba(255, 255, 255, 0.3);
             border-radius: 50%;
             display: flex;
@@ -148,12 +57,242 @@
             align-items: center;
             cursor: pointer;
             font-size: 16px;
-            font-weight: bold;
             color: white;
             transition: background 0.3s;
         }
+
         .info-icon:hover {
             background: rgba(255, 255, 255, 0.5);
+        }
+
+        #messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE a Edge */
+        }
+
+        #messages::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-size: 15px;
+            line-height: 1.5;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+            cursor: pointer;
+        }
+
+        .my-message {
+            background: #5865f2;
+            color: white;
+            align-self: flex-end;
+        }
+
+        .other-message {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            align-self: flex-start;
+        }
+
+        .system-message {
+            background: rgba(255, 255, 255, 0.4);
+            color: white;
+            align-self: center;
+            text-align: center;
+            padding: 8px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: default;
+        }
+
+        .deleted-message {
+            font-style: italic;
+            color: #ccc;
+            padding: 10px 15px;
+            max-width: 70%;
+            border-radius: 12px;
+            cursor: default;
+        }
+
+        .deleted-message.my-message {
+            background: #5865f2;
+            align-self: flex-end;
+        }
+
+        .deleted-message.other-message {
+            background: rgba(255, 255, 255, 0.3);
+            align-self: flex-start;
+        }
+
+        .time {
+            font-size: 11px;
+            color: #ccc;
+            position: absolute;
+            bottom: -18px;
+            left: 10px;
+        }
+
+        .quote {
+            border-left: 3px solid #5865f2;
+            padding-left: 10px;
+            margin-bottom: 5px;
+            font-size: 13px;
+            color: #ddd;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        .typing-indicator {
+            font-size: 14px;
+            color: #42a5f5;
+            font-style: italic;
+            display: none;
+            margin: 10px 0;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            position: relative;
+        }
+
+        #messageInput {
+            flex-grow: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            font-size: 15px;
+            margin-top: 10px;
+        }
+
+        .input-container button {
+            padding: 12px 20px;
+            margin-left: 10px;
+            background: #5865f2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .input-container button:hover {
+            background: #4752c4;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-left: 10px;
+        }
+
+        .action-buttons button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .action-buttons button:hover {
+            color: #ddd;
+        }
+
+        .input-bottom {
+            display: flex;
+            align-items: center;
+        }
+
+        .emoji-picker {
+            display: none;
+            position: absolute;
+            bottom: 60px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+            flex-wrap: wrap;
+            gap: 5px;
+            flex-direction: row;
+        }
+
+        .emoji-picker span {
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .emoji-picker span:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .context-menu {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            color: black;
+        }
+
+        .context-menu button {
+            display: block;
+            width: 100%;
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .context-menu button:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .quote-preview {
+            display: none;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            margin: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            border-left: 3px solid #5865f2;
+        }
+
+        .quote-preview p {
+            margin: 0;
+            color: #ddd;
+        }
+
+        .quote-preview .close-quote {
+            cursor: pointer;
+            color: #ccc;
+            font-size: 14px;
+            margin-left: 10px;
         }
 
         .modal {
@@ -165,10 +304,10 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
             justify-content: center;
             align-items: center;
         }
+
         .modal-content {
             background: white;
             padding: 20px;
@@ -178,8 +317,17 @@
             color: black;
             text-align: center;
             position: relative;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
+
+        .modal-content button {
+            margin-top: 10px;
+            background: #5865f2;
+        }
+
+        .modal-content button:hover {
+            background: #4752c4;
+        }
+
         .close {
             position: absolute;
             right: 20px;
@@ -187,43 +335,91 @@
             font-size: 24px;
             cursor: pointer;
         }
+
         .close:hover {
             color: red;
         }
-        @media (max-width: 600px) {
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
             .chat-container {
-                width: 95%;
+                width: 100%;
+                height: 100vh;
                 padding: 15px;
             }
-            input {
-                font-size: 16px;
+
+            .chat-header h2 {
+                font-size: 18px;
             }
-            button {
-                padding: 12px;
+
+            #messages {
+                padding: 10px;
             }
-            .info-icon {
-                top: 15px;
-                right: 15px;
-                width: 25px;
-                height: 25px;
+
+            .message {
+                max-width: 80%;
                 font-size: 14px;
+            }
+
+            #messageInput {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .input-container button {
+                padding: 10px 15px;
+            }
+
+            .info-icon {
+                width: 28px;
+                height: 28px;
+                font-size: 14px;
+            }
+
+            .emoji-picker {
+                max-width: 200px;
             }
         }
     </style>
 </head>
 <body>
     <div class="chat-container">
-        <h2>Podpora Chat</h2>
-        <div class="info-icon" onclick="openInfoModal()">i</div>
+        <div class="chat-header">
+            <h2 id="chatTitle">Podpora Chat</h2>
+            <div class="info-icon" onclick="openInfoModal()">i</div>
+        </div>
         <div id="messages"></div>
         <div class="typing-indicator" id="typingIndicator">Píše...</div>
         <div class="input-container">
-            <input type="text" id="messageInput" placeholder="Napište zprávu...">
-            <button onclick="sendMessage()">Odeslat</button>
+            <div class="quote-preview" id="quotePreview">
+                <p id="quoteText"></p>
+                <span class="close-quote" onclick="clearQuote()">×</span>
+            </div>
+            <div class="input-bottom">
+                <input type="text" id="messageInput" placeholder="Napište zprávu...">
+                <div class="action-buttons">
+                    <button title="Emoji" onclick="toggleEmojiPicker()"><i class="fas fa-smile"></i></button>
+                </div>
+                <button onclick="sendMessage()">Odeslat</button>
+            </div>
+            <div class="emoji-picker" id="emojiPicker">
+                <span onclick="addEmoji('😊')">😊</span>
+                <span onclick="addEmoji('👍')">👍</span>
+                <span onclick="addEmoji('😂')">😂</span>
+                <span onclick="addEmoji('😢')">😢</span>
+                <span onclick="addEmoji('😍')">😍</span>
+                <span onclick="addEmoji('🙌')">🙌</span>
+                <span onclick="addEmoji('🔥')">🔥</span>
+                <span onclick="addEmoji('🚀')">🚀</span>
+            </div>
         </div>
     </div>
 
-    <div id="infoModal" class="modal" style="display: none;">
+    <div id="infoModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeInfoModal()">×</span>
             <h2>Informace o ticketu</h2>
@@ -231,10 +427,13 @@
             <p><strong>Typ ticketu:</strong> <span id="modalSupportType"></span></p>
             <p><strong>Podrobnosti:</strong> <span id="modalUserIssue"></span></p>
             <p><strong>Vytvořeno:</strong> <span id="modalCreatedAt"></span></p>
+            <div id="resolveButtonContainer">
+                <button id="resolveButton" onclick="markAsResolved()">Označit jako vyřešené</button>
+            </div>
         </div>
     </div>
 
-    <div id="takenModal" class="modal" style="display: none;">
+    <div id="takenModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeTakenModal()">×</span>
             <h2>Převzetí ticketu</h2>
@@ -242,12 +441,18 @@
         </div>
     </div>
 
-    <div id="errorModal" class="modal" style="display: none;">
+    <div id="errorModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeErrorModal()">×</span>
             <h2>Chyba</h2>
             <p id="errorMessage"></p>
         </div>
+    </div>
+
+    <div id="contextMenu" class="context-menu">
+        <button onclick="deleteMessage()">Odstranit</button>
+        <button onclick="replyToMessage()">Odpovědět</button>
+        <button onclick="copyMessage()">Kopírovat</button>
     </div>
 
     <script>
@@ -256,7 +461,7 @@
             authDomain: "supportczsk-34edc.firebaseapp.com",
             databaseURL: "https://supportczsk-34edc-default-rtdb.europe-west1.firebasedatabase.app",
             projectId: "supportczsk-34edc",
-            storageBucket: "supportczsk-34edc.firebasestorage.app",
+            storageBucket: "supportczsk-34edc.appspot.com",
             messagingSenderId: "673199842238",
             appId: "1:673199842238:web:4e7d3a0f9084a59218cfef",
             measurementId: "G-ZDYD4DNM33"
@@ -266,21 +471,38 @@
         const db = firebase.database();
 
         const userId = "support";
-
         const urlParams = new URLSearchParams(window.location.search);
         const chatID = urlParams.get("id");
 
         if (!chatID) {
-            alert("Chyba: Chat ID nebylo nalezeno!");
-            window.location.href = "podpora.html";
+            document.getElementById("errorMessage").textContent = "Chyba: Chat ID nebylo nalezeno!";
+            document.getElementById("errorModal").style.display = "flex";
+            setTimeout(() => window.location.href = "podpora.html", 2000);
         }
 
         const messagesRef = db.ref("chats/" + chatID);
         const chatInfoRef = db.ref(`podpora_chats/${chatID}`);
+        let selectedMessageKey = null;
+        let selectedMessageText = null;
+        let quotedMessage = null;
+
+        // Načtení typu ticketu do hlavičky
+        chatInfoRef.once("value", snapshot => {
+            if (snapshot.exists()) {
+                const chatData = snapshot.val();
+                document.getElementById("chatTitle").textContent = chatData.supportType || "Podpora Chat";
+            }
+        });
+
+        function formatMessage(text) {
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+                .replace(/\*(.*?)\*/g, '<i>$1</i>');
+        }
 
         function sendMessage() {
             const messageInput = document.getElementById("messageInput");
-            const message = messageInput.value.trim();
+            let message = messageInput.value.trim();
 
             if (!message) {
                 document.getElementById("errorMessage").textContent = "Zpráva nemůže být prázdná.";
@@ -291,7 +513,7 @@
             if (message.toLowerCase().startsWith("/převzítchat")) {
                 const text = message.substring("/převzítchat".length).trim();
                 if (!text) {
-                    document.getElementById("errorMessage").textContent = "Musíte ještě zadat vaše jméno.";
+                    document.getElementById("errorMessage").textContent = "Musíte zadat vaše jméno.";
                     document.getElementById("errorModal").style.display = "flex";
                     return;
                 }
@@ -321,67 +543,168 @@
                     document.getElementById("errorModal").style.display = "flex";
                 });
             } else {
-                messagesRef.push({
+                const messageData = {
                     text: message,
                     userId: userId,
                     isSupport: true,
-                    timestamp: Date.now()
-                });
+                    timestamp: Date.now(),
+                    deleted: false
+                };
+
+                if (quotedMessage) {
+                    messageData.quote = {
+                        text: quotedMessage.text,
+                        key: quotedMessage.key
+                    };
+                }
+
+                messagesRef.push(messageData);
                 messageInput.value = "";
+                clearQuote();
             }
         }
 
         messagesRef.on("child_added", snapshot => {
             const msg = snapshot.val();
-            if (!msg.text) return;
+            if (!msg.text && !msg.deleted) return;
 
             const msgElement = document.createElement("div");
             msgElement.classList.add("message");
+            msgElement.dataset.key = snapshot.key;
 
             const messageTime = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
             if (msg.isSystemMessage) {
                 msgElement.classList.add("system-message");
-                msgElement.innerHTML = `<p>${msg.text}</p>`;
+                msgElement.innerHTML = `<p>${formatMessage(msg.text)}</p>`;
+            } else if (msg.deleted) {
+                msgElement.classList.add("deleted-message", msg.isSupport ? "my-message" : "other-message");
+                msgElement.innerHTML = `<p>Tato zpráva byla smazána</p>`;
             } else {
-                msgElement.innerHTML = `<p>${msg.text}</p><span class="time">${messageTime}</span>`;
-                if (msg.isSupport) {
-                    msgElement.classList.add("my-message");
-                } else {
-                    msgElement.classList.add("other-message");
+                let html = "";
+                if (msg.quote) {
+                    html += `<div class="quote">${formatMessage(msg.quote.text)}</div>`;
                 }
+                html += `<p>${formatMessage(msg.text)}</p><span class="time">${messageTime}</span>`;
+                msgElement.innerHTML = html;
+                msgElement.classList.add(msg.isSupport ? "my-message" : "other-message");
+
+                msgElement.addEventListener("contextmenu", e => showContextMenu(e, snapshot.key, msg.text, msg.isSupport));
+                msgElement.addEventListener("touchstart", e => handleTouchStart(e, snapshot.key, msg.text, msg.isSupport));
             }
 
             document.getElementById("messages").appendChild(msgElement);
-
             document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
         });
 
-        const typingIndicator = document.getElementById("typingIndicator");
+        messagesRef.on("child_changed", snapshot => {
+            const msg = snapshot.val();
+            const msgElement = document.querySelector(`.message[data-key="${snapshot.key}"]`);
+            if (!msgElement) return;
 
-        function showTypingIndicator(isTyping) {
-            typingIndicator.style.display = isTyping ? 'block' : 'none';
+            if (msg.deleted) {
+                msgElement.innerHTML = `<p>Tato zpráva byla smazána</p>`;
+                msgElement.classList.remove("my-message", "other-message");
+                msgElement.classList.add("deleted-message", msg.isSupport ? "my-message" : "other-message");
+                msgElement.style.cursor = "default";
+                msgElement.replaceWith(msgElement.cloneNode(true)); // Odstraní event listenery
+            }
+        });
+
+        let touchTimer;
+        function handleTouchStart(e, key, text, isSupport) {
+            touchTimer = setTimeout(() => {
+                showContextMenu(e, key, text, isSupport);
+            }, 500);
+        }
+
+        document.addEventListener("touchend", () => clearTimeout(touchTimer));
+        document.addEventListener("touchmove", () => clearTimeout(touchTimer));
+
+        function showContextMenu(e, key, text, isSupport) {
+            e.preventDefault();
+            selectedMessageKey = key;
+            selectedMessageText = text;
+
+            const contextMenu = document.getElementById("contextMenu");
+            contextMenu.style.display = "block";
+            contextMenu.style.left = `${e.pageX}px`;
+            contextMenu.style.top = `${e.pageY}px`;
+
+            const deleteButton = contextMenu.querySelector("button:nth-child(1)");
+            deleteButton.style.display = isSupport ? "block" : "none";
+        }
+
+        document.addEventListener("click", () => {
+            document.getElementById("contextMenu").style.display = "none";
+        });
+
+        function deleteMessage() {
+            if (selectedMessageKey) {
+                messagesRef.child(selectedMessageKey).update({ deleted: true, text: "Tato zpráva byla smazána" }).catch(error => {
+                    console.error("Chyba při mazání zprávy:", error);
+                    document.getElementById("errorMessage").textContent = "Nepodařilo se odstranit zprávu.";
+                    document.getElementById("errorModal").style.display = "flex";
+                });
+            }
+            document.getElementById("contextMenu").style.display = "none";
+        }
+
+        function replyToMessage() {
+            quotedMessage = { key: selectedMessageKey, text: selectedMessageText };
+            const quotePreview = document.getElementById("quotePreview");
+            document.getElementById("quoteText").textContent = selectedMessageText;
+            quotePreview.style.display = "block";
+            document.getElementById("messageInput").focus();
+            document.getElementById("contextMenu").style.display = "none";
+        }
+
+        function clearQuote() {
+            quotedMessage = null;
+            document.getElementById("quotePreview").style.display = "none";
+            document.getElementById("quoteText").textContent = "";
+        }
+
+        function copyMessage() {
+            navigator.clipboard.writeText(selectedMessageText).then(() => {
+                document.getElementById("contextMenu").style.display = "none";
+            }).catch(error => {
+                console.error("Chyba při kopírování zprávy:", error);
+                document.getElementById("errorMessage").textContent = "Nepodařilo se zkopírovat zprávu.";
+                document.getElementById("errorModal").style.display = "flex";
+            });
         }
 
         let typingTimeout;
         document.getElementById("messageInput").addEventListener("input", function() {
             clearTimeout(typingTimeout);
-            showTypingIndicator(true);
+            document.getElementById("typingIndicator").style.display = "block";
             typingTimeout = setTimeout(() => {
-                showTypingIndicator(false);
+                document.getElementById("typingIndicator").style.display = "none";
             }, 2000);
         });
 
-        const messageInput = document.getElementById("messageInput");
-        messageInput.addEventListener("keypress", function(event) {
+        document.getElementById("messageInput").addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
                 event.preventDefault();
                 sendMessage();
             }
         });
 
+        function toggleEmojiPicker() {
+            const emojiPicker = document.getElementById("emojiPicker");
+            emojiPicker.style.display = emojiPicker.style.display === "flex" ? "none" : "flex";
+        }
+
+        function addEmoji(emoji) {
+            const messageInput = document.getElementById("messageInput");
+            messageInput.value += emoji;
+            messageInput.focus();
+            document.getElementById("emojiPicker").style.display = "none";
+        }
+
         function openInfoModal() {
-            db.ref(`podpora_chats/${chatID}`).once("value", snapshot => {
+            chatInfoRef.once("value", snapshot => {
                 if (snapshot.exists()) {
                     const chatData = snapshot.val();
 
@@ -390,18 +713,15 @@
                     document.getElementById("modalUserIssue").textContent = chatData.userIssue || "Žádné podrobnosti";
 
                     const createdAt = chatData.createdAt;
-                    if (createdAt) {
-                        const date = new Date(createdAt);
-                        const formattedDate = date.toLocaleString('cs-CZ', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        });
-                        document.getElementById("modalCreatedAt").textContent = formattedDate;
+                    document.getElementById("modalCreatedAt").textContent = createdAt
+                        ? new Date(createdAt).toLocaleString('cs-CZ', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+                        : "Není k dispozici";
+
+                    const resolveButtonContainer = document.getElementById("resolveButtonContainer");
+                    if (chatData.status === "resolved") {
+                        resolveButtonContainer.innerHTML = "<p>Ticket vyřešen</p>";
                     } else {
-                        document.getElementById("modalCreatedAt").textContent = "Není k dispozici";
+                        resolveButtonContainer.innerHTML = '<button id="resolveButton" onclick="markAsResolved()">Označit jako vyřešené</button>';
                     }
 
                     document.getElementById("infoModal").style.display = "flex";
@@ -411,9 +731,21 @@
                 }
             }).catch(error => {
                 console.error("Chyba při načítání dat:", error);
-                document.getElementById("errorMessage").textContent = "Došlo k chybě při načítání informací o ticketu.";
+                document.getElementById("errorMessage").textContent = "Došlo k chybě při načítání informací.";
                 document.getElementById("errorModal").style.display = "flex";
             });
+        }
+
+        function markAsResolved() {
+            chatInfoRef.update({ status: "resolved" });
+            messagesRef.push({
+                text: "Ticket byl označen jako vyřešený.",
+                userId: userId,
+                isSupport: true,
+                isSystemMessage: true,
+                timestamp: Date.now()
+            });
+            document.getElementById("resolveButtonContainer").innerHTML = "<p>Ticket vyřešen</p>";
         }
 
         function closeInfoModal() {
