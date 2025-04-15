@@ -52,19 +52,26 @@
             max-width: 400px;
             width: 90%;
         }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
         button {
             background: #ff6b6b;
             color: white;
-            padding: 10px;
+            padding: 12px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: background 0.3s ease, transform 0.2s ease;
             width: 100%;
-            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: bold;
         }
         button:hover {
             background: #e63946;
+            transform: translateY(-2px);
         }
         .overlay {
             display: none;
@@ -78,40 +85,121 @@
         }
         .modal {
             display: none;
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            color: black;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 25px;
+            border-radius: 12px;
+            color: white;
             width: 90%;
-            max-width: 400px;
+            max-width: 450px;
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(12px);
             z-index: 1001;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+        .modal h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            text-align: center;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        #support-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        .support-type-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        .support-type-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
         }
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             text-align: left;
             position: relative;
         }
+        .form-group label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+            color: #ddd;
+        }
         input, textarea {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            margin-top: 5px;
+            width: calc(100% - 20px);
+            margin-left: auto;
+            margin-right: auto;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 14px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+        input:focus, textarea:focus {
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+            outline: none;
+        }
+        input::placeholder, textarea::placeholder {
+            color: #aaa;
         }
         textarea {
             resize: none;
+            height: 120px;
         }
         .char-counter {
             position: absolute;
-            bottom: 5px;
+            bottom: 10px;
             right: 10px;
             font-size: 12px;
-            color: gray;
+            color: #ccc;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        #submit-support {
+            background: #5865f2;
+            padding: 12px;
+            font-size: 16px;
+        }
+        #submit-support:hover {
+            background: #4752c4;
+        }
+        .modal p {
+            font-size: 14px;
+            color: #ddd;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        .loader {
+            font-size: 14px;
+            color: white;
+            text-align: center;
+            margin-top: 10px;
         }
         @media (max-width: 600px) {
             .development-notice {
@@ -121,6 +209,26 @@
             .container {
                 width: 95%;
                 padding: 15px;
+            }
+            .modal {
+                width: 95%;
+                padding: 20px;
+            }
+            .modal h2 {
+                font-size: 20px;
+            }
+            #support-options {
+                grid-template-columns: 1fr;
+            }
+            .support-type-btn {
+                font-size: 13px;
+            }
+            input, textarea {
+                font-size: 13px;
+                width: calc(100% - 30px);
+            }
+            .char-counter {
+                right: 26px;
             }
         }
     </style>
@@ -145,26 +253,25 @@
             <button class="support-type-btn" data-support-type="Kritická podpora">Kritická podpora</button>
             <button class="support-type-btn" data-support-type="Emoční podpora">Emoční podpora</button>
             <button class="support-type-btn" data-support-type="Zdravotní podpora">Zdravotní podpora</button>
+            <button class="support-type-btn" data-support-type="Rodinné problémy">Rodinné problémy</button>
+            <button class="support-type-btn" data-support-type="Osamělost a izolace">Osamělost a izolace</button>
             <button class="support-type-btn" data-support-type="Vztahy a láska">Vztahy a láska</button>
         </div>
     </div>
 
     <div class="modal" id="support-details-form">
-        <h2>Formulář</h2>
-        <p>Tento formulář nám pomůže k tomu, abychom vám poskytli co nejrychlejší a nejefektivnější podporu.
-           Vaše soukromí je pro nás prioritou a proto vše, co sem napíšete, uvidíte jenom vy a naše podpora a nebude to 
-           sdíleno třetím stranám.
-        </p>
+        <h2>Formulář podpory</h2>
+        <p>Tento formulář nám pomůže poskytnout vám rychlou a efektivní podporu. Vaše soukromí je pro nás prioritou – vše, co zde uvedete, zůstane pouze mezi vámi a naším týmem podpory a nebude sdíleno s třetími stranami.</p>
         <div class="form-group">
-            <label for="user-name">Vaše jméno:</label>
-            <input type="text" id="user-name" required>
+            <label for="user-name">Vaše jméno</label>
+            <input type="text" id="user-name" placeholder="Zadejte své jméno" required>
         </div>
         <div class="form-group">
-            <label for="user-issue">Popište svůj problém:</label>
-            <textarea id="user-issue" maxlength="1000" required></textarea>
+            <label for="user-issue">Popište svůj problém</label>
+            <textarea id="user-issue" maxlength="1000" placeholder="Detailně popište, s čím potřebujete pomoci" required></textarea>
             <div class="char-counter" id="char-counter">0 / 1000</div>
         </div>
-        <button id="submit-support">Vytvořit podporu</button>
+        <button id="submit-support">Vytvořit ticket</button>
         <div class="loader" id="loader" style="display:none;">Načítání...</div>
     </div>
 
@@ -176,7 +283,7 @@
             authDomain: "supportczsk-34edc.firebaseapp.com",
             databaseURL: "https://supportczsk-34edc-default-rtdb.europe-west1.firebasedatabase.app",
             projectId: "supportczsk-34edc",
-            storageBucket: "supportczsk-34edc.firebasestorage.app",
+            storageBucket: "supportczsk-34edc.firebaseapp.com",
             messagingSenderId: "673199842238",
             appId: "1:673199842238:web:4e7d3a0f9084a59218cfef",
             measurementId: "G-ZDYD4DNM33"

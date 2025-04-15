@@ -159,6 +159,10 @@
             const newCommand = `<p><strong>${commandData.timestamp} - ${commandData.username}</strong>: ${commandData.command} - ${commandData.result}</p>`;
             outputDiv.innerHTML += newCommand;
         });
+
+        document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+});
     </script>
 </body>
 </html>

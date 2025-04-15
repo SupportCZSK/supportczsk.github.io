@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Support CZSK</title>
+    <title>SupportCZSK</title>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -57,12 +57,12 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE a Edge */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
         #messages::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
+            display: none;
         }
 
         .message {
@@ -203,6 +203,19 @@
         .input-bottom {
             display: flex;
             align-items: center;
+        }
+
+        .edit-buttons {
+            display: none;
+            gap: 10px;
+        }
+
+        #cancelEditButton {
+            background: #e63946;
+        }
+
+        #cancelEditButton:hover {
+            background: #c92f3a;
         }
 
         .emoji-picker {
@@ -379,7 +392,11 @@
                 <div class="action-buttons">
                     <button title="Emoji" onclick="toggleEmojiPicker()"><i class="fas fa-smile"></i></button>
                 </div>
-                <button onclick="sendMessage()">Odeslat</button>
+                <button id="sendButton" onclick="sendMessage()">Odeslat</button>
+                <div class="edit-buttons" id="editButtons">
+                    <button id="saveEditButton" onclick="saveEditedMessage()">Uložit</button>
+                    <button id="cancelEditButton" onclick="cancelEdit()">Zrušit</button>
+                </div>
             </div>
             <div class="emoji-picker" id="emojiPicker">
                 <span onclick="addEmoji('😊')">😊</span>
@@ -404,6 +421,7 @@
 
     <div id="contextMenu" class="context-menu">
         <button onclick="deleteMessage()">Odstranit</button>
+        <button onclick="editMessage()">Upravit</button>
         <button onclick="replyToMessage()">Odpovědět</button>
         <button onclick="copyMessage()">Kopírovat</button>
     </div>
@@ -447,8 +465,8 @@
         let selectedMessageKey = null;
         let selectedMessageText = null;
         let quotedMessage = null;
+        let isEditing = false;
 
-        // Načtení typu ticketu do hlavičky
         chatInfoRef.once("value", snapshot => {
             if (snapshot.exists()) {
                 const chatData = snapshot.val();
@@ -463,6 +481,8 @@
         }
 
         function sendMessage() {
+            if (isEditing) return;
+
             const messageInput = document.getElementById("messageInput");
             let message = messageInput.value.trim();
 
@@ -507,7 +527,7 @@
                 msgElement.innerHTML = `<p>${formatMessage(msg.text)}</p>`;
             } else if (msg.deleted) {
                 msgElement.classList.add("deleted-message", msg.isSupport ? "other-message" : "my-message");
-                msgElement.innerHTML = `<p>Tato zpráva byla smazána</p>`;
+                msgElement.innerHTML = `<p>Tota zpráva byla smazána</p>`;
             } else {
                 let html = "";
                 if (msg.quote) {
@@ -535,7 +555,15 @@
                 msgElement.classList.remove("my-message", "other-message");
                 msgElement.classList.add("deleted-message", msg.isSupport ? "other-message" : "my-message");
                 msgElement.style.cursor = "default";
-                msgElement.replaceWith(msgElement.cloneNode(true)); // Odstraní event listenery
+                msgElement.replaceWith(msgElement.cloneNode(true));
+            } else {
+                let html = "";
+                if (msg.quote) {
+                    html += `<div class="quote">${formatMessage(msg.quote.text)}</div>`;
+                }
+                const messageTime = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                html += `<p>${formatMessage(msg.text)}</p><span class="time">${messageTime}</span>`;
+                msgElement.innerHTML = html;
             }
         });
 
@@ -556,11 +584,41 @@
 
             const contextMenu = document.getElementById("contextMenu");
             contextMenu.style.display = "block";
-            contextMenu.style.left = `${e.pageX}px`;
-            contextMenu.style.top = `${e.pageY}px`;
+
+            // Calculate position to keep menu within viewport
+            const menuWidth = contextMenu.offsetWidth;
+            const menuHeight = contextMenu.offsetHeight;
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            let posX = e.pageX;
+            let posY = e.pageY;
+
+            // Adjust X position if menu would overflow right
+            if (posX + menuWidth > windowWidth - 10) {
+                posX = windowWidth - menuWidth - 10;
+            }
+            // Ensure X is not negative
+            if (posX < 10) {
+                posX = 10;
+            }
+
+            // Adjust Y position if menu would overflow bottom
+            if (posY + menuHeight > windowHeight - 10) {
+                posY = windowHeight - menuHeight - 10;
+            }
+            // Ensure Y is not negative
+            if (posY < 10) {
+                posY = 10;
+            }
+
+            contextMenu.style.left = `${posX}px`;
+            contextMenu.style.top = `${posY}px`;
 
             const deleteButton = contextMenu.querySelector("button:nth-child(1)");
+            const editButton = contextMenu.querySelector("button:nth-child(2)");
             deleteButton.style.display = isSupport ? "none" : "block";
+            editButton.style.display = isSupport ? "none" : "block";
         }
 
         document.addEventListener("click", () => {
@@ -576,6 +634,44 @@
                 });
             }
             document.getElementById("contextMenu").style.display = "none";
+        }
+
+        function editMessage() {
+            isEditing = true;
+            const messageInput = document.getElementById("messageInput");
+            messageInput.value = selectedMessageText;
+            messageInput.focus();
+            document.getElementById("sendButton").style.display = "none";
+            document.getElementById("editButtons").style.display = "flex";
+            document.getElementById("contextMenu").style.display = "none";
+            document.getElementById("emojiPicker").style.display = "none";
+        }
+
+        function saveEditedMessage() {
+            const newText = document.getElementById("messageInput").value.trim();
+            if (!newText) {
+                document.getElementById("errorMessage").textContent = "Zpráva nemůže být prázdná.";
+                document.getElementById("errorModal").style.display = "flex";
+                return;
+            }
+
+            if (selectedMessageKey) {
+                messagesRef.child(selectedMessageKey).update({ text: newText }).catch(error => {
+                    console.error("Chyba při úpravě zprávy:", error);
+                    document.getElementById("errorMessage").textContent = "Nepodařilo se upravit zprávu.";
+                    document.getElementById("errorModal").style.display = "flex";
+                });
+            }
+            cancelEdit();
+        }
+
+        function cancelEdit() {
+            isEditing = false;
+            document.getElementById("messageInput").value = "";
+            document.getElementById("sendButton").style.display = "block";
+            document.getElementById("editButtons").style.display = "none";
+            selectedMessageKey = null;
+            selectedMessageText = null;
         }
 
         function replyToMessage() {
@@ -613,13 +709,18 @@
         });
 
         document.getElementById("messageInput").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
+            if (event.key === "Enter" && !event.shiftKey) {
                 event.preventDefault();
-                sendMessage();
+                if (isEditing) {
+                    saveEditedMessage();
+                } else {
+                    sendMessage();
+                }
             }
         });
 
         function toggleEmojiPicker() {
+            if (isEditing) return;
             const emojiPicker = document.getElementById("emojiPicker");
             emojiPicker.style.display = emojiPicker.style.display === "flex" ? "none" : "flex";
         }
@@ -634,6 +735,10 @@
         function closeErrorModal() {
             document.getElementById("errorModal").style.display = "none";
         }
+
+        document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+});
     </script>
 </body>
 </html>
