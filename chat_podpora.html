@@ -519,7 +519,6 @@
         let quotedMessage = null;
         let isEditing = false;
 
-        // Sanitace vstupu
         const sanitizeInput = (input) => {
             const div = document.createElement('div');
             div.textContent = input;
@@ -549,11 +548,7 @@
             const messageInput = document.getElementById("messageInput");
             let message = messageInput.value.trim();
 
-            if (!message) {
-                document.getElementById("errorMessage").textContent = "Zpráva nemůže být prázdná.";
-                document.getElementById("errorModal").style.display = "flex";
-                return;
-            }
+            if (!message) return;
 
             if (message.toLowerCase().startsWith("/převzítchat")) {
                 let takenBy = message.substring("/převzítchat".length).trim();
@@ -563,7 +558,6 @@
                     return;
                 }
 
-                // Omezení délky jména a sanitace
                 takenBy = sanitizeInput(takenBy).substring(0, 50);
 
                 chatInfoRef.once("value", snapshot => {
@@ -859,7 +853,6 @@
                         resolveButtonContainer.innerHTML = "<p>Ticket vyřešen</p>";
                     } else {
                         resolveButtonContainer.innerHTML = '<button id="resolveButton">Označit jako vyřešené</button>';
-                        // Přidání události pro dynamicky vytvořené tlačítko
                         const resolveButton = document.getElementById("resolveButton");
                         if (resolveButton) {
                             resolveButton.addEventListener("click", markAsResolved);
@@ -913,7 +906,6 @@
             document.getElementById("errorModal").style.display = "none";
         }
 
-        // Přidání událostí pro tlačítka
         document.getElementById("sendButton").addEventListener("click", sendMessage);
         document.getElementById("emojiButton").addEventListener("click", toggleEmojiPicker);
         document.getElementById("clearQuote").addEventListener("click", clearQuote);
@@ -924,12 +916,10 @@
         document.getElementById("closeTakenModal").addEventListener("click", closeTakenModal);
         document.getElementById("closeErrorModal").addEventListener("click", closeErrorModal);
 
-        // Přidání událostí pro emoji
         document.querySelectorAll(".emoji").forEach(emoji => {
             emoji.addEventListener("click", () => addEmoji(emoji.dataset.emoji));
         });
 
-        // Přidání událostí pro kontextové menu
         document.getElementById("deleteMessageBtn").addEventListener("click", deleteMessage);
         document.getElementById("editMessageBtn").addEventListener("click", editMessage);
         document.getElementById("replyMessageBtn").addEventListener("click", replyToMessage);

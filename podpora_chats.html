@@ -6,7 +6,7 @@
     <title>SupportCZSK</title>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -207,12 +207,19 @@
                     chatElement.classList.add("chat-item");
                     chatElement.innerHTML = `
                         <span class="chat-title">${userName} | ${supportType}</span>
-                        <button class="options-btn" onclick="openOptions(event, '${chatId}')">⋮</button>
+                        <button class="options-btn"><i class="fas fa-ellipsis-v"></i></button>
                     `;
 
-                    chatElement.onclick = function() {
+                    chatElement.addEventListener("click", (e) => {
+                        if (e.target.closest(".options-btn")) return; 
                         window.location.href = `chat_podpora.html?id=${chatId}`;
-                    };
+                    });
+
+                    const optionsBtn = chatElement.querySelector(".options-btn");
+                    optionsBtn.addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        openOptions(e, chatId);
+                    });
 
                     chatList.appendChild(chatElement);
 
@@ -279,6 +286,12 @@
         function closeModal() {
             document.getElementById("chatModal").style.display = "none";
         }
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                closeModal();
+            }
+        });
 
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
