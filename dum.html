@@ -51,7 +51,7 @@
             backdrop-filter: blur(10px);
             max-width: 400px;
             width: 90%;
-            position: relative; /* Pro pozicování ikony otazníku */
+            position: relative;
         }
         h1 {
             font-size: 28px;
@@ -359,19 +359,16 @@
 
         let selectedSupportType = '';
 
-        // Otevření modálního okna nápovědy
         helpIcon.addEventListener('click', () => {
             overlay.style.display = 'block';
             helpModal.style.display = 'block';
         });
 
-        // Zavření modálního okna nápovědy tlačítkem
         closeHelpModalBtn.addEventListener('click', () => {
             overlay.style.display = 'none';
             helpModal.style.display = 'none';
         });
 
-        // Zavření modálního okna nápovědy kliknutím na překryv
         overlay.addEventListener('click', () => {
             overlay.style.display = 'none';
             helpModal.style.display = 'none';

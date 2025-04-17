@@ -738,7 +738,6 @@
             document.getElementById("errorModal").style.display = "none";
         }
 
-        // Přidání událostí pro tlačítka
         document.getElementById("sendButton").addEventListener("click", sendMessage);
         document.getElementById("emojiButton").addEventListener("click", toggleEmojiPicker);
         document.getElementById("clearQuote").addEventListener("click", clearQuote);
@@ -746,7 +745,6 @@
         document.getElementById("cancelEditButton").addEventListener("click", cancelEdit);
         document.getElementById("closeErrorModal").addEventListener("click", closeErrorModal);
 
-        // Přidání událostí pro emoji
         document.querySelectorAll(".emoji").forEach(emoji => {
             emoji.addEventListener("click", () => addEmoji(emoji.dataset.emoji));
         });

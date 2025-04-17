@@ -210,13 +210,10 @@
                         <button class="options-btn" aria-label="Zobrazit informace o chatu"><i class="fas fa-ellipsis-v"></i></button>
                     `;
 
-                    // Přesměrování při kliknutí na chat-item (mimo tlačítko)
                     chatElement.addEventListener("click", (e) => {
                         if (e.target.closest(".options-btn")) return;
                         window.location.href = `chat_podpora.html?id=${chatId}`;
                     });
-
-                    // Otevření modálního okna při kliknutí na tlačítko
                     const optionsBtn = chatElement.querySelector(".options-btn");
                     optionsBtn.addEventListener("click", (e) => {
                         e.stopPropagation();
@@ -289,10 +286,8 @@
             document.getElementById("chatModal").style.display = "none";
         }
 
-        // Přidání event listeneru pro zavření modálu
         document.querySelector(".close").addEventListener("click", closeModal);
 
-        // Zavření modálu klávesou Esc
         document.addEventListener("keydown", (e) => {
             if (e.key === "Escape") {
                 closeModal();
