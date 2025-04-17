@@ -233,6 +233,10 @@
             flex-direction: row;
         }
 
+        .emoji-picker.active {
+            display: flex;
+        }
+
         .emoji-picker span {
             font-size: 24px;
             cursor: pointer;
@@ -385,45 +389,45 @@
         <div class="input-container">
             <div class="quote-preview" id="quotePreview">
                 <p id="quoteText"></p>
-                <span class="close-quote" onclick="clearQuote()">×</span>
+                <span class="close-quote" id="clearQuote">×</span>
             </div>
             <div class="input-bottom">
                 <input type="text" id="messageInput" placeholder="Napište zprávu...">
                 <div class="action-buttons">
-                    <button title="Emoji" onclick="toggleEmojiPicker()"><i class="fas fa-smile"></i></button>
+                    <button title="Emoji" id="emojiButton"><i class="fas fa-smile"></i></button>
                 </div>
-                <button id="sendButton" onclick="sendMessage()">Odeslat</button>
+                <button id="sendButton">Odeslat</button>
                 <div class="edit-buttons" id="editButtons">
-                    <button id="saveEditButton" onclick="saveEditedMessage()">Uložit</button>
-                    <button id="cancelEditButton" onclick="cancelEdit()">Zrušit</button>
+                    <button id="saveEditButton">Uložit</button>
+                    <button id="cancelEditButton">Zrušit</button>
                 </div>
             </div>
             <div class="emoji-picker" id="emojiPicker">
-                <span onclick="addEmoji('😊')">😊</span>
-                <span onclick="addEmoji('👍')">👍</span>
-                <span onclick="addEmoji('😂')">😂</span>
-                <span onclick="addEmoji('😢')">😢</span>
-                <span onclick="addEmoji('😍')">😍</span>
-                <span onclick="addEmoji('🙌')">🙌</span>
-                <span onclick="addEmoji('🔥')">🔥</span>
-                <span onclick="addEmoji('🚀')">🚀</span>
+                <span class="emoji" data-emoji="😊">😊</span>
+                <span class="emoji" data-emoji="👍">👍</span>
+                <span class="emoji" data-emoji="😂">😂</span>
+                <span class="emoji" data-emoji="😢">😢</span>
+                <span class="emoji" data-emoji="😍">😍</span>
+                <span class="emoji" data-emoji="🙌">🙌</span>
+                <span class="emoji" data-emoji="🔥">🔥</span>
+                <span class="emoji" data-emoji="🚀">🚀</span>
             </div>
         </div>
     </div>
 
     <div id="errorModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeErrorModal()">×</span>
+            <span class="close" id="closeErrorModal">×</span>
             <h2>Chyba</h2>
             <p id="errorMessage"></p>
         </div>
     </div>
 
     <div id="contextMenu" class="context-menu">
-        <button onclick="deleteMessage()">Odstranit</button>
-        <button onclick="editMessage()">Upravit</button>
-        <button onclick="replyToMessage()">Odpovědět</button>
-        <button onclick="copyMessage()">Kopírovat</button>
+        <button id="deleteMessageBtn">Odstranit</button>
+        <button id="editMessageBtn">Upravit</button>
+        <button id="replyMessageBtn">Odpovědět</button>
+        <button id="copyMessageBtn">Kopírovat</button>
     </div>
 
     <script type="module">
@@ -613,8 +617,8 @@
             contextMenu.style.left = `${posX}px`;
             contextMenu.style.top = `${posY}px`;
 
-            const deleteButton = contextMenu.querySelector("button:nth-child(1)");
-            const editButton = contextMenu.querySelector("button:nth-child(2)");
+            const deleteButton = contextMenu.querySelector("#deleteMessageBtn");
+            const editButton = contextMenu.querySelector("#editMessageBtn");
             deleteButton.style.display = isSupport ? "none" : "block";
             editButton.style.display = isSupport ? "none" : "block";
         }
@@ -720,19 +724,38 @@
         function toggleEmojiPicker() {
             if (isEditing) return;
             const emojiPicker = document.getElementById("emojiPicker");
-            emojiPicker.style.display = emojiPicker.style.display === "flex" ? "none" : "flex";
+            emojiPicker.classList.toggle("active");
         }
 
         function addEmoji(emoji) {
             const messageInput = document.getElementById("messageInput");
             messageInput.value += emoji;
             messageInput.focus();
-            document.getElementById("emojiPicker").style.display = "none";
+            document.getElementById("emojiPicker").classList.remove("active");
         }
 
         function closeErrorModal() {
             document.getElementById("errorModal").style.display = "none";
         }
+
+        // Přidání událostí pro tlačítka
+        document.getElementById("sendButton").addEventListener("click", sendMessage);
+        document.getElementById("emojiButton").addEventListener("click", toggleEmojiPicker);
+        document.getElementById("clearQuote").addEventListener("click", clearQuote);
+        document.getElementById("saveEditButton").addEventListener("click", saveEditedMessage);
+        document.getElementById("cancelEditButton").addEventListener("click", cancelEdit);
+        document.getElementById("closeErrorModal").addEventListener("click", closeErrorModal);
+
+        // Přidání událostí pro emoji
+        document.querySelectorAll(".emoji").forEach(emoji => {
+            emoji.addEventListener("click", () => addEmoji(emoji.dataset.emoji));
+        });
+
+        // Přidání událostí pro kontextové menu
+        document.getElementById("deleteMessageBtn").addEventListener("click", deleteMessage);
+        document.getElementById("editMessageBtn").addEventListener("click", editMessage);
+        document.getElementById("replyMessageBtn").addEventListener("click", replyToMessage);
+        document.getElementById("copyMessageBtn").addEventListener("click", copyMessage);
 
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();

@@ -251,6 +251,10 @@
             flex-direction: row;
         }
 
+        .emoji-picker.active {
+            display: flex;
+        }
+
         .emoji-picker span {
             font-size: 24px;
             cursor: pointer;
@@ -325,16 +329,29 @@
             background: white;
             padding: 20px;
             border-radius: 10px;
-            width: 80%;
+            width: 90%;
             max-width: 400px;
             color: black;
-            text-align: center;
+            text-align: left;
             position: relative;
+        }
+
+        .modal-content h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .modal-content p {
+            font-size: 14px;
+            margin: 10px 0;
         }
 
         .modal-content button {
             margin-top: 10px;
             background: #5865f2;
+            width: 100%;
+            padding: 10px;
         }
 
         .modal-content button:hover {
@@ -396,6 +413,11 @@
             .emoji-picker {
                 max-width: 200px;
             }
+
+            .modal-content {
+                width: 95%;
+                padding: 15px;
+            }
         }
     </style>
 </head>
@@ -403,56 +425,54 @@
     <div class="chat-container">
         <div class="chat-header">
             <h2 id="chatTitle">Podpora Chat</h2>
-            <div class="info-icon" onclick="openInfoModal()">i</div>
+            <div class="info-icon" id="infoButton">i</div>
         </div>
         <div id="messages"></div>
         <div class="typing-indicator" id="typingIndicator">Píše...</div>
         <div class="input-container">
             <div class="quote-preview" id="quotePreview">
                 <p id="quoteText"></p>
-                <span class="close-quote" onclick="clearQuote()">×</span>
+                <span class="close-quote" id="clearQuote">×</span>
             </div>
             <div class="input-bottom">
                 <input type="text" id="messageInput" placeholder="Napište zprávu...">
                 <div class="action-buttons">
-                    <button title="Emoji" onclick="toggleEmojiPicker()"><i class="fas fa-smile"></i></button>
+                    <button title="Emoji" id="emojiButton"><i class="fas fa-smile"></i></button>
                 </div>
-                <button id="sendButton" onclick="sendMessage()">Odeslat</button>
+                <button id="sendButton">Odeslat</button>
                 <div class="edit-buttons" id="editButtons">
-                    <button id="saveEditButton" onclick="saveEditedMessage()">Uložit</button>
-                    <button id="cancelEditButton" onclick="cancelEdit()">Zrušit</button>
+                    <button id="saveEditButton">Uložit</button>
+                    <button id="cancelEditButton">Zrušit</button>
                 </div>
             </div>
             <div class="emoji-picker" id="emojiPicker">
-                <span onclick="addEmoji('😊')">😊</span>
-                <span onclick="addEmoji('👍')">👍</span>
-                <span onclick="addEmoji('😂')">😂</span>
-                <span onclick="addEmoji('😢')">😢</span>
-                <span onclick="addEmoji('😍')">😍</span>
-                <span onclick="addEmoji('🙌')">🙌</span>
-                <span onclick="addEmoji('🔥')">🔥</span>
-                <span onclick="addEmoji('🚀')">🚀</span>
+                <span class="emoji" data-emoji="😊">😊</span>
+                <span class="emoji" data-emoji="👍">👍</span>
+                <span class="emoji" data-emoji="😂">😂</span>
+                <span class="emoji" data-emoji="😢">😢</span>
+                <span class="emoji" data-emoji="😍">😍</span>
+                <span class="emoji" data-emoji="🙌">🙌</span>
+                <span class="emoji" data-emoji="🔥">🔥</span>
+                <span class="emoji" data-emoji="🚀">🚀</span>
             </div>
         </div>
     </div>
 
     <div id="infoModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeInfoModal()">×</span>
+            <span class="close" id="closeInfoModal">×</span>
             <h2>Informace o ticketu</h2>
             <p><strong>Jméno uživatele:</strong> <span id="modalUserName"></span></p>
             <p><strong>Typ ticketu:</strong> <span id="modalSupportType"></span></p>
             <p><strong>Podrobnosti:</strong> <span id="modalUserIssue"></span></p>
             <p><strong>Vytvořeno:</strong> <span id="modalCreatedAt"></span></p>
-            <div id="resolveButtonContainer">
-                <button id="resolveButton" onclick="markAsResolved()">Označit jako vyřešené</button>
-            </div>
+            <div id="resolveButtonContainer"></div>
         </div>
     </div>
 
     <div id="takenModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeTakenModal()">×</span>
+            <span class="close" id="closeTakenModal">×</span>
             <h2>Převzetí ticketu</h2>
             <p id="takenMessage"></p>
         </div>
@@ -460,17 +480,17 @@
 
     <div id="errorModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeErrorModal()">×</span>
+            <span class="close" id="closeErrorModal">×</span>
             <h2>Chyba</h2>
             <p id="errorMessage"></p>
         </div>
     </div>
 
     <div id="contextMenu" class="context-menu">
-        <button onclick="deleteMessage()">Odstranit</button>
-        <button onclick="editMessage()">Upravit</button>
-        <button onclick="replyToMessage()">Odpovědět</button>
-        <button onclick="copyMessage()">Kopírovat</button>
+        <button id="deleteMessageBtn">Odstranit</button>
+        <button id="editMessageBtn">Upravit</button>
+        <button id="replyMessageBtn">Odpovědět</button>
+        <button id="copyMessageBtn">Kopírovat</button>
     </div>
 
     <script type="module">
@@ -498,6 +518,13 @@
         let selectedMessageText = null;
         let quotedMessage = null;
         let isEditing = false;
+
+        // Sanitace vstupu
+        const sanitizeInput = (input) => {
+            const div = document.createElement('div');
+            div.textContent = input;
+            return div.innerHTML.replace(/[<>"'&]/g, '');
+        };
 
         chatInfoRef.once("value", snapshot => {
             if (snapshot.exists()) {
@@ -529,12 +556,15 @@
             }
 
             if (message.toLowerCase().startsWith("/převzítchat")) {
-                const text = message.substring("/převzítchat".length).trim();
-                if (!text) {
+                let takenBy = message.substring("/převzítchat".length).trim();
+                if (!takenBy) {
                     document.getElementById("errorMessage").textContent = "Musíte zadat vaše jméno.";
                     document.getElementById("errorModal").style.display = "flex";
                     return;
                 }
+
+                // Omezení délky jména a sanitace
+                takenBy = sanitizeInput(takenBy).substring(0, 50);
 
                 chatInfoRef.once("value", snapshot => {
                     const chatData = snapshot.val();
@@ -543,7 +573,7 @@
                         document.getElementById("takenModal").style.display = "flex";
                     } else {
                         chatInfoRef.update({
-                            takenBy: text
+                            takenBy: takenBy
                         }).catch(error => {
                             console.error("Chyba při aktualizaci převzetí ticketu:", error);
                             document.getElementById("errorMessage").textContent = "Nepodařilo se převzít ticket.";
@@ -552,7 +582,7 @@
                         });
 
                         messagesRef.push({
-                            text: `Tento ticket převzal ${text}`,
+                            text: `Tento ticket převzal ${takenBy}`,
                             userId: userId,
                             isSupport: true,
                             isSystemMessage: true,
@@ -571,7 +601,7 @@
                 });
             } else {
                 const messageData = {
-                    text: message,
+                    text: sanitizeInput(message),
                     userId: userId,
                     isSupport: true,
                     timestamp: Date.now(),
@@ -693,8 +723,8 @@
             contextMenu.style.left = `${posX}px`;
             contextMenu.style.top = `${posY}px`;
 
-            const deleteButton = contextMenu.querySelector("button:nth-child(1)");
-            const editButton = contextMenu.querySelector("button:nth-child(2)");
+            const deleteButton = document.getElementById("deleteMessageBtn");
+            const editButton = document.getElementById("editMessageBtn");
             deleteButton.style.display = isSupport ? "block" : "none";
             editButton.style.display = isSupport ? "block" : "none";
         }
@@ -722,7 +752,7 @@
             document.getElementById("sendButton").style.display = "none";
             document.getElementById("editButtons").style.display = "flex";
             document.getElementById("contextMenu").style.display = "none";
-            document.getElementById("emojiPicker").style.display = "none";
+            document.getElementById("emojiPicker").classList.remove("active");
         }
 
         function saveEditedMessage() {
@@ -734,7 +764,7 @@
             }
 
             if (selectedMessageKey) {
-                messagesRef.child(selectedMessageKey).update({ text: newText }).catch(error => {
+                messagesRef.child(selectedMessageKey).update({ text: sanitizeInput(newText) }).catch(error => {
                     console.error("Chyba při úpravě zprávy:", error);
                     document.getElementById("errorMessage").textContent = "Nepodařilo se upravit zprávu.";
                     document.getElementById("errorModal").style.display = "flex";
@@ -800,14 +830,14 @@
         function toggleEmojiPicker() {
             if (isEditing) return;
             const emojiPicker = document.getElementById("emojiPicker");
-            emojiPicker.style.display = emojiPicker.style.display === "flex" ? "none" : "flex";
+            emojiPicker.classList.toggle("active");
         }
 
         function addEmoji(emoji) {
             const messageInput = document.getElementById("messageInput");
             messageInput.value += emoji;
             messageInput.focus();
-            document.getElementById("emojiPicker").style.display = "none";
+            document.getElementById("emojiPicker").classList.remove("active");
         }
 
         function openInfoModal() {
@@ -828,7 +858,12 @@
                     if (chatData.status === "resolved") {
                         resolveButtonContainer.innerHTML = "<p>Ticket vyřešen</p>";
                     } else {
-                        resolveButtonContainer.innerHTML = '<button id="resolveButton" onclick="markAsResolved()">Označit jako vyřešené</button>';
+                        resolveButtonContainer.innerHTML = '<button id="resolveButton">Označit jako vyřešené</button>';
+                        // Přidání události pro dynamicky vytvořené tlačítko
+                        const resolveButton = document.getElementById("resolveButton");
+                        if (resolveButton) {
+                            resolveButton.addEventListener("click", markAsResolved);
+                        }
                     }
 
                     document.getElementById("infoModal").style.display = "flex";
@@ -877,6 +912,28 @@
         function closeErrorModal() {
             document.getElementById("errorModal").style.display = "none";
         }
+
+        // Přidání událostí pro tlačítka
+        document.getElementById("sendButton").addEventListener("click", sendMessage);
+        document.getElementById("emojiButton").addEventListener("click", toggleEmojiPicker);
+        document.getElementById("clearQuote").addEventListener("click", clearQuote);
+        document.getElementById("saveEditButton").addEventListener("click", saveEditedMessage);
+        document.getElementById("cancelEditButton").addEventListener("click", cancelEdit);
+        document.getElementById("infoButton").addEventListener("click", openInfoModal);
+        document.getElementById("closeInfoModal").addEventListener("click", closeInfoModal);
+        document.getElementById("closeTakenModal").addEventListener("click", closeTakenModal);
+        document.getElementById("closeErrorModal").addEventListener("click", closeErrorModal);
+
+        // Přidání událostí pro emoji
+        document.querySelectorAll(".emoji").forEach(emoji => {
+            emoji.addEventListener("click", () => addEmoji(emoji.dataset.emoji));
+        });
+
+        // Přidání událostí pro kontextové menu
+        document.getElementById("deleteMessageBtn").addEventListener("click", deleteMessage);
+        document.getElementById("editMessageBtn").addEventListener("click", editMessage);
+        document.getElementById("replyMessageBtn").addEventListener("click", replyToMessage);
+        document.getElementById("copyMessageBtn").addEventListener("click", copyMessage);
 
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
