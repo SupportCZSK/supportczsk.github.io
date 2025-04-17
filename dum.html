@@ -51,6 +51,7 @@
             backdrop-filter: blur(10px);
             max-width: 400px;
             width: 90%;
+            position: relative; /* Pro pozicování ikony otazníku */
         }
         h1 {
             font-size: 28px;
@@ -201,6 +202,37 @@
             text-align: center;
             margin-top: 10px;
         }
+        .help-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .help-icon:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+        .modal-close-btn {
+            background: #ff6b6b;
+            padding: 10px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .modal-close-btn:hover {
+            background: #e63946;
+        }
         @media (max-width: 600px) {
             .development-notice {
                 font-size: 14px;
@@ -230,6 +262,11 @@
             .char-counter {
                 right: 26px;
             }
+            .help-icon {
+                width: 25px;
+                height: 25px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -241,6 +278,7 @@
     <div class="container">
         <h1>Vítejte na stránce podpory</h1>
         <button id="support-btn">Potřebuji podporu</button>
+        <div class="help-icon" id="help-icon" title="Nápověda">?</div>
     </div>
 
     <div class="overlay" id="overlay"></div>
@@ -275,29 +313,36 @@
         <div class="loader" id="loader" style="display:none;">Načítání...</div>
     </div>
 
-    <!-- Firebase knihovny -->
+    <div class="modal" id="help-modal">
+        <h2>Nápověda</h2>
+        <p>Vítejte na stránce podpory! Níže najdete stručný návod, jak tuto stránku používat:</p>
+        <ul style="text-align: left; font-size: 14px; color: #ddd; line-height: 1.6; margin-bottom: 20px;">
+            <li>Klikněte na tlačítko <strong>"Potřebuji podporu"</strong> pro vytvoření nového ticketu.</li>
+            <li>Vyberte typ podpory, který nejlépe odpovídá vašemu problému (např. Technická podpora, Emoční podpora).</li>
+            <li>Vyplňte formulář s vaším jménem a popisem problému (minimálně 10 znaků, maximálně 1000).</li>
+            <li>Po odeslání formuláře budete přesměrováni do chatu, kde můžete komunikovat s naším týmem podpory.</li>
+            <li>Vaše údaje jsou soukromé a nebudou sdíleny s třetími stranami.</li>
+        </ul>
+        <button class="modal-close-btn" id="close-help-modal">Zavřít</button>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
 
-    <!-- Hlavní skript -->
     <script type="module">
-        // Import Firebase konfigurace
         import { firebaseConfig } from './config.js';
 
-        // Inicializace Firebase
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
         const db = firebase.database();
 
-        // Funkce pro očištění vstupu proti XSS
         const sanitizeInput = (input) => {
             const div = document.createElement('div');
             div.textContent = input;
             return div.innerHTML.replace(/[<>"'&]/g, '');
         };
 
-        // DOM elementy
         const overlay = document.getElementById('overlay');
         const supportBtn = document.getElementById('support-btn');
         const supportForm = document.getElementById('support-form');
@@ -305,14 +350,35 @@
         const submitSupport = document.getElementById('submit-support');
         const userIssueInput = document.getElementById('user-issue');
         const charCounter = document.getElementById('char-counter');
+        const helpIcon = document.getElementById('help-icon');
+        const helpModal = document.getElementById('help-modal');
+        const closeHelpModalBtn = document.getElementById('close-help-modal');
 
-        // Inicializace userID
         const userID = localStorage.getItem('userId') || `user_${Math.random().toString(36).substr(2, 9)}`;
         localStorage.setItem('userId', userID);
 
         let selectedSupportType = '';
 
-        // Event listener pro tlačítko "Potřebuji podporu"
+        // Otevření modálního okna nápovědy
+        helpIcon.addEventListener('click', () => {
+            overlay.style.display = 'block';
+            helpModal.style.display = 'block';
+        });
+
+        // Zavření modálního okna nápovědy tlačítkem
+        closeHelpModalBtn.addEventListener('click', () => {
+            overlay.style.display = 'none';
+            helpModal.style.display = 'none';
+        });
+
+        // Zavření modálního okna nápovědy kliknutím na překryv
+        overlay.addEventListener('click', () => {
+            overlay.style.display = 'none';
+            helpModal.style.display = 'none';
+            supportForm.style.display = 'none';
+            supportDetailsForm.style.display = 'none';
+        });
+
         supportBtn.addEventListener('click', async () => {
             try {
                 const snapshot = await db.ref('chats_list').orderByChild('userId').equalTo(userID).once('value');
@@ -329,7 +395,6 @@
             }
         });
 
-        // Event listener pro výběr typu podpory
         document.querySelectorAll('.support-type-btn').forEach(button => {
             button.addEventListener('click', () => {
                 selectedSupportType = button.getAttribute('data-support-type');
@@ -338,12 +403,10 @@
             });
         });
 
-        // Event listener pro odeslání formuláře
         submitSupport.addEventListener('click', async () => {
             const userName = sanitizeInput(document.getElementById('user-name').value.trim());
             const userIssue = sanitizeInput(document.getElementById('user-issue').value.trim());
 
-            // Validace vstupů
             if (!userName || !userIssue) {
                 alert('Prosím, vyplňte všechna pole!');
                 return;
@@ -357,7 +420,6 @@
                 return;
             }
 
-            // Zobrazení načítacího indikátoru
             const loader = document.getElementById('loader');
             loader.style.display = 'block';
             submitSupport.disabled = true;
@@ -395,7 +457,6 @@
             }
         });
 
-        // Event listener pro počítadlo znaků
         charCounter.textContent = '0 / 1000';
         userIssueInput.addEventListener('input', () => {
             const maxLength = 1000;

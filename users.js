@@ -1,4 +1,3 @@
-// users.js
 const users = [
     { "username": "Danek", "password": "Danek1234567", "rank": "Owner" },
     { "username": "User1", "password": "userpass", "rank": "Supporter" },

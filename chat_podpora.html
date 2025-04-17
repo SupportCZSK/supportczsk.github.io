@@ -473,19 +473,12 @@
         <button onclick="copyMessage()">Kopírovat</button>
     </div>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBWCW9o5njLRCOAPJHSZoi_SEG0vJ0gI60",
-            authDomain: "supportczsk-34edc.firebaseapp.com",
-            databaseURL: "https://supportczsk-34edc-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "supportczsk-34edc",
-            storageBucket: "supportczsk-34edc.appspot.com",
-            messagingSenderId: "673199842238",
-            appId: "1:673199842238:web:4e7d3a0f9084a59218cfef",
-            measurementId: "G-ZDYD4DNM33"
-        };
+    <script type="module">
+        import { firebaseConfig } from './config.js';
 
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
         const db = firebase.database();
 
         const userId = "support";
@@ -496,6 +489,7 @@
             document.getElementById("errorMessage").textContent = "Chyba: Chat ID nebylo nalezeno!";
             document.getElementById("errorModal").style.display = "flex";
             setTimeout(() => window.location.href = "podpora.html", 2000);
+            throw new Error("Chat ID not found");
         }
 
         const messagesRef = db.ref("chats/" + chatID);
@@ -510,6 +504,10 @@
                 const chatData = snapshot.val();
                 document.getElementById("chatTitle").textContent = chatData.supportType || "Podpora Chat";
             }
+        }).catch(error => {
+            console.error("Chyba při načítání informací o chatu:", error);
+            document.getElementById("errorMessage").textContent = "Nepodařilo se načíst informace o chatu.";
+            document.getElementById("errorModal").style.display = "flex";
         });
 
         function formatMessage(text) {
@@ -546,6 +544,11 @@
                     } else {
                         chatInfoRef.update({
                             takenBy: text
+                        }).catch(error => {
+                            console.error("Chyba při aktualizaci převzetí ticketu:", error);
+                            document.getElementById("errorMessage").textContent = "Nepodařilo se převzít ticket.";
+                            document.getElementById("errorModal").style.display = "flex";
+                            return;
                         });
 
                         messagesRef.push({
@@ -554,6 +557,10 @@
                             isSupport: true,
                             isSystemMessage: true,
                             timestamp: Date.now()
+                        }).catch(error => {
+                            console.error("Chyba při odesílání systémové zprávy:", error);
+                            document.getElementById("errorMessage").textContent = "Nepodařilo se odeslat systémovou zprávu.";
+                            document.getElementById("errorModal").style.display = "flex";
                         });
                     }
                     messageInput.value = "";
@@ -578,7 +585,11 @@
                     };
                 }
 
-                messagesRef.push(messageData);
+                messagesRef.push(messageData).catch(error => {
+                    console.error("Chyba při odesílání zprávy:", error);
+                    document.getElementById("errorMessage").textContent = "Nepodařilo se odeslat zprávu.";
+                    document.getElementById("errorModal").style.display = "flex";
+                });
                 messageInput.value = "";
                 clearQuote();
             }
@@ -657,7 +668,6 @@
             const contextMenu = document.getElementById("contextMenu");
             contextMenu.style.display = "block";
 
-            // Adjust position to keep menu within viewport
             const menuWidth = contextMenu.offsetWidth;
             const menuHeight = contextMenu.offsetHeight;
             const windowWidth = window.innerWidth;
@@ -834,14 +844,25 @@
         }
 
         function markAsResolved() {
-            chatInfoRef.update({ status: "resolved" });
+            chatInfoRef.update({ status: "resolved" }).catch(error => {
+                console.error("Chyba při označení ticketu jako vyřešeného:", error);
+                document.getElementById("errorMessage").textContent = "Nepodařilo se označit ticket jako vyřešený.";
+                document.getElementById("errorModal").style.display = "flex";
+                return;
+            });
+
             messagesRef.push({
                 text: "Ticket byl označen jako vyřešený.",
                 userId: userId,
                 isSupport: true,
                 isSystemMessage: true,
                 timestamp: Date.now()
+            }).catch(error => {
+                console.error("Chyba při odesílání systémové zprávy:", error);
+                document.getElementById("errorMessage").textContent = "Nepodařilo se odeslat systémovou zprávu.";
+                document.getElementById("errorModal").style.display = "flex";
             });
+
             document.getElementById("resolveButtonContainer").innerHTML = "<p>Ticket vyřešen</p>";
         }
 
@@ -858,8 +879,8 @@
         }
 
         document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-});
+            e.preventDefault();
+        });
     </script>
 </body>
 </html>
