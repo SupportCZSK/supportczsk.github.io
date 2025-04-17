@@ -167,7 +167,7 @@
 
     <div id="chatModal" class="modal" style="display: none;">
         <div class="modal-content">
-            <span class="close" onclick="closeModal()">×</span>
+            <span class="close" aria-label="Zavřít modální okno">×</span>
             <h2>Informace o chatu</h2>
             <p><strong>Jméno uživatele:</strong> <span id="modalUserName"></span></p>
             <p><strong>Typ podpory:</strong> <span id="modalSupportType"></span></p>
@@ -207,14 +207,16 @@
                     chatElement.classList.add("chat-item");
                     chatElement.innerHTML = `
                         <span class="chat-title">${userName} | ${supportType}</span>
-                        <button class="options-btn"><i class="fas fa-ellipsis-v"></i></button>
+                        <button class="options-btn" aria-label="Zobrazit informace o chatu"><i class="fas fa-ellipsis-v"></i></button>
                     `;
 
+                    // Přesměrování při kliknutí na chat-item (mimo tlačítko)
                     chatElement.addEventListener("click", (e) => {
-                        if (e.target.closest(".options-btn")) return; 
+                        if (e.target.closest(".options-btn")) return;
                         window.location.href = `chat_podpora.html?id=${chatId}`;
                     });
 
+                    // Otevření modálního okna při kliknutí na tlačítko
                     const optionsBtn = chatElement.querySelector(".options-btn");
                     optionsBtn.addEventListener("click", (e) => {
                         e.stopPropagation();
@@ -287,6 +289,10 @@
             document.getElementById("chatModal").style.display = "none";
         }
 
+        // Přidání event listeneru pro zavření modálu
+        document.querySelector(".close").addEventListener("click", closeModal);
+
+        // Zavření modálu klávesou Esc
         document.addEventListener("keydown", (e) => {
             if (e.key === "Escape") {
                 closeModal();
