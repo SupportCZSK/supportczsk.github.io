@@ -275,105 +275,131 @@
         <div class="loader" id="loader" style="display:none;">Načítání...</div>
     </div>
 
+    <!-- Firebase knihovny -->
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBWCW9o5njLRCOAPJHSZoi_SEG0vJ0gI60",
-            authDomain: "supportczsk-34edc.firebaseapp.com",
-            databaseURL: "https://supportczsk-34edc-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "supportczsk-34edc",
-            storageBucket: "supportczsk-34edc.firebaseapp.com",
-            messagingSenderId: "673199842238",
-            appId: "1:673199842238:web:4e7d3a0f9084a59218cfef",
-            measurementId: "G-ZDYD4DNM33"
-        };
 
+    <!-- Hlavní skript -->
+    <script type="module">
+        // Import Firebase konfigurace
+        import { firebaseConfig } from './config.js';
+
+        // Inicializace Firebase
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
         const db = firebase.database();
 
-        const overlay = document.getElementById("overlay");
-        const supportBtn = document.getElementById("support-btn");
-        const supportForm = document.getElementById("support-form");
-        const supportDetailsForm = document.getElementById("support-details-form");
-        const submitSupport = document.getElementById("submit-support");
+        // Funkce pro očištění vstupu proti XSS
+        const sanitizeInput = (input) => {
+            const div = document.createElement('div');
+            div.textContent = input;
+            return div.innerHTML.replace(/[<>"'&]/g, '');
+        };
 
-        const userID = localStorage.getItem("userId") || "user_" + Math.random().toString(36).substr(2, 9);
-        localStorage.setItem("userId", userID);
+        // DOM elementy
+        const overlay = document.getElementById('overlay');
+        const supportBtn = document.getElementById('support-btn');
+        const supportForm = document.getElementById('support-form');
+        const supportDetailsForm = document.getElementById('support-details-form');
+        const submitSupport = document.getElementById('submit-support');
+        const userIssueInput = document.getElementById('user-issue');
+        const charCounter = document.getElementById('char-counter');
 
-        let selectedSupportType = "";
+        // Inicializace userID
+        const userID = localStorage.getItem('userId') || `user_${Math.random().toString(36).substr(2, 9)}`;
+        localStorage.setItem('userId', userID);
 
-        supportBtn.addEventListener("click", async () => {
+        let selectedSupportType = '';
+
+        // Event listener pro tlačítko "Potřebuji podporu"
+        supportBtn.addEventListener('click', async () => {
             try {
-                const snapshot = await db.ref("chats_list").orderByChild("userId").equalTo(userID).once("value");
+                const snapshot = await db.ref('chats_list').orderByChild('userId').equalTo(userID).once('value');
                 if (snapshot.exists()) {
                     const chatData = Object.values(snapshot.val())[0];
                     window.location.href = `chat.html?id=${encodeURIComponent(chatData.chatID)}`;
                 } else {
-                    overlay.style.display = "block";
-                    supportForm.style.display = "block";
+                    overlay.style.display = 'block';
+                    supportForm.style.display = 'block';
                 }
             } catch (error) {
-                console.error("Chyba při kontrole podpory:", error);
-                alert("Došlo k chybě při kontrole stavu podpory. Zkuste to znovu.");
+                console.error('Chyba při kontrole podpory:', error);
+                alert('Došlo k chybě při kontrole stavu podpory. Zkuste to znovu později.');
             }
         });
 
-        document.querySelectorAll(".support-type-btn").forEach(button => {
-            button.addEventListener("click", function() {
-                selectedSupportType = this.getAttribute("data-support-type");
-                supportForm.style.display = "none";
-                supportDetailsForm.style.display = "block";
+        // Event listener pro výběr typu podpory
+        document.querySelectorAll('.support-type-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                selectedSupportType = button.getAttribute('data-support-type');
+                supportForm.style.display = 'none';
+                supportDetailsForm.style.display = 'block';
             });
         });
 
-        submitSupport.addEventListener("click", function() {
-            const userName = document.getElementById("user-name").value.trim();
-            const userIssue = document.getElementById("user-issue").value.trim();
+        // Event listener pro odeslání formuláře
+        submitSupport.addEventListener('click', async () => {
+            const userName = sanitizeInput(document.getElementById('user-name').value.trim());
+            const userIssue = sanitizeInput(document.getElementById('user-issue').value.trim());
 
+            // Validace vstupů
             if (!userName || !userIssue) {
-                alert("Vyplňte všechna pole!");
+                alert('Prosím, vyplňte všechna pole!');
+                return;
+            }
+            if (userName.length > 50) {
+                alert('Jméno může mít maximálně 50 znaků.');
+                return;
+            }
+            if (userIssue.length < 10) {
+                alert('Popis problému musí mít alespoň 10 znaků.');
                 return;
             }
 
-            const chatID = "chat_" + Math.random().toString(36).substr(2, 9);
-            const createdAt = Date.now();
+            // Zobrazení načítacího indikátoru
+            const loader = document.getElementById('loader');
+            loader.style.display = 'block';
+            submitSupport.disabled = true;
 
-            db.ref().update({
-                [`chats_list/${chatID}`]: { 
-                    chatID, 
-                    userId: userID, 
-                    userName, 
-                    userIssue, 
-                    supportType: selectedSupportType, 
-                    createdAt
-                },
-                [`podpora_chats/${chatID}`]: { 
-                    chatID, 
-                    userId: userID, 
-                    userName, 
-                    userIssue, 
-                    supportType: selectedSupportType, 
-                    createdAt
-                }
-            }).then(() => {
+            try {
+                const chatID = `chat_${Math.random().toString(36).substr(2, 9)}`;
+                const createdAt = Date.now();
+
+                await db.ref().update({
+                    [`chats_list/${chatID}`]: {
+                        chatID,
+                        userId: userID,
+                        userName,
+                        userIssue,
+                        supportType: selectedSupportType,
+                        createdAt
+                    },
+                    [`podpora_chats/${chatID}`]: {
+                        chatID,
+                        userId: userID,
+                        userName,
+                        userIssue,
+                        supportType: selectedSupportType,
+                        createdAt
+                    }
+                });
+
                 window.location.href = `chat.html?id=${encodeURIComponent(chatID)}`;
-            }).catch(error => {
-                console.error("Chyba při vytváření ticketu:", error);
-                alert("Došlo k chybě při vytváření ticketu. Zkuste to znovu.");
-            });
+            } catch (error) {
+                console.error('Chyba při vytváření ticketu:', error);
+                alert(`Nepodařilo se vytvořit ticket: ${error.message}. Zkuste to znovu později.`);
+            } finally {
+                loader.style.display = 'none';
+                submitSupport.disabled = false;
+            }
         });
 
-        const userIssueInput = document.getElementById("user-issue");
-        const charCounter = document.getElementById("char-counter");
-
-        charCounter.textContent = `0 / 1000`;
-
-        userIssueInput.addEventListener("input", function () {
+        // Event listener pro počítadlo znaků
+        charCounter.textContent = '0 / 1000';
+        userIssueInput.addEventListener('input', () => {
             const maxLength = 1000;
-            const currentLength = this.value.length;
+            const currentLength = userIssueInput.value.length;
             charCounter.textContent = `${currentLength} / ${maxLength}`;
         });
     </script>
