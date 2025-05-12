@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SupportCZSK - bezpečný a anonymní prostor pro podporu, porozumění a pomoc.">
     <title>SupportCZSK</title>
     <style>
         body {
@@ -22,14 +23,13 @@
             top: 0;
             left: 0;
             width: 100%;
-            padding: 15px 0;
+            padding: 10px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 0 0 10px 10px;
-            padding: 10px 40px;
             z-index: 1000;
         }
 
@@ -129,22 +129,31 @@
 
         @media (max-width: 600px) {
             header {
-                padding: 10px 20px;
+                padding: 17px;
+                flex-direction: column;
                 flex-wrap: wrap;
                 align-items: center;
-                flex-direction: column;
             }
 
             .hamburger {
                 display: block;
                 position: absolute;
-                right: 20px;
+                right: 30px;
                 top: 15px;
+                font-size: 30px;
+                background: none;
+                border: none;
+                color: white;
+                cursor: pointer;
+                padding: 10px;
+                z-index: 1100;
             }
 
             h1 {
-                font-size: 1.5em;
-                margin: 0;
+                font-size: 1.4em;
+                margin: 15px 0 10px;
+                text-align: center;
+                width: 90%;
             }
 
             nav {
@@ -154,6 +163,10 @@
                 margin: 0;
                 padding: 10px 0;
                 background: rgba(255, 255, 255, 0.1);
+                position: absolute;
+                top: 100%;
+                left: 0;
+                z-index: 1000;
             }
 
             nav.active {
@@ -161,11 +174,11 @@
             }
 
             nav a {
-                width: 100%;
+                width: 70%;
+                margin: 0 auto;
                 text-align: center;
-                padding: 12px;
-                margin: 0;
-                border-radius: 0;
+                padding: 15px;
+                border-radius: 5px;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             }
 
@@ -174,12 +187,12 @@
             }
 
             main {
-                margin-top: 60px;
+                margin-top: 80px;
                 transition: margin-top 0.3s ease;
             }
 
             .nav-open {
-                margin-top: 170px;
+                margin-top: 210px;
             }
 
             .about {
@@ -210,13 +223,13 @@
 <body>
     <header>
         <h1>Vítejte na naší podpoře</h1>
-        <button class="hamburger">☰</button>
-        <nav>
+        <button class="hamburger" aria-label="Otevřít menu">☰</button>
+        <nav role="navigation">
             <a href="dum.html">Podpora</a>
             <a href="podminky.html">Podmínky</a>
         </nav>
     </header>
-    
+
     <main>
         <section class="about">
             <h2>O naší podpoře</h2>

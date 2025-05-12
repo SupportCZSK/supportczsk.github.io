@@ -460,6 +460,10 @@
             const currentLength = userIssueInput.value.length;
             charCounter.textContent = `${currentLength} / ${maxLength}`;
         });
+
+        document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+});
     </script>
 </body>
 </html>
