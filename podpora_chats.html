@@ -1,302 +1,307 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SupportCZSK</title>
-    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(to right, #667eea, #764ba2);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            color: white;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SupportCZSK</title>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(to right, #667eea, #764ba2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      color: white;
+    }
 
-        .container {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            max-width: 600px;
-            width: 90%;
-            text-align: left;
-            display: flex;
-            flex-direction: column;
-            height: 80vh;
-        }
+    .container {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      max-width: 600px;
+      width: 90%;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      height: 80vh;
+    }
 
-        #search {
-            width: 96%;
-            padding: 12px;
-            border-radius: 6px;
-            border: none;
-            font-size: 16px;
-            outline: none;
-            margin-bottom: 10px;
-            background: rgba(255, 255, 255, 0.3);
-            color: black;
-        }
+    #search {
+      width: 96%;
+      padding: 12px;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+      outline: none;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.3);
+      color: black;
+    }
 
-        #chatList {
-            flex-grow: 1;
-            overflow-y: auto;
-            max-height: calc(80vh - 60px);
-            position: relative;
-        }
+    #chatList {
+      flex-grow: 1;
+      overflow-y: auto;
+      max-height: calc(80vh - 60px);
+      position: relative;
+    }
 
-        .chat-item {
-            background: rgba(255, 255, 255, 0.2);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px;
-            margin-top: 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: transform 0.2s ease, background 0.3s ease;
-        }
+    .chat-item {
+      background: rgba(255, 255, 255, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px;
+      margin-top: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.3s ease;
+    }
 
-        .chat-item:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: none;
-        }
+    .chat-item:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: none;
+    }
 
-        .chat-title {
-            font-size: 18px;
-            font-weight: bold;
-        }
+    .chat-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
 
-        .options-btn {
-            font-size: 24px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            color: white;
-        }
+    .options-btn {
+      font-size: 24px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: white;
+    }
 
-        .options-btn:hover {
-            color: #ddd;
-        }
+    .options-btn:hover {
+      color: #ddd;
+    }
 
-        #noResultsMessage {
-            display: none;
-            text-align: center;
-            padding: 10px;
-            color: #ddd;
-        }
+    #noResultsMessage {
+      display: none;
+      text-align: center;
+      padding: 10px;
+      color: #ddd;
+    }
 
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-        .modal-content {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 400px;
-            color: black;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 400px;
+      color: black;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
 
-        .close {
-            position: absolute;
-            right: 20px;
-            top: 10px;
-            font-size: 24px;
-            cursor: pointer;
-        }
+    .close {
+      position: absolute;
+      right: 20px;
+      top: 10px;
+      font-size: 24px;
+      cursor: pointer;
+    }
 
-        .close:hover {
-            color: red;
-        }
+    .close:hover {
+      color: red;
+    }
 
-        .back-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: linear-gradient(to right, #ff7eb3, #ff758c);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-        }
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: linear-gradient(to right, #ff7eb3, #ff758c);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
 
-        .back-button:hover {
-            background: linear-gradient(to right, #ff5470, #ff758c);
-            transform: scale(1.05);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-        }
-    </style>
+    .back-button:hover {
+      background: linear-gradient(to right, #ff5470, #ff758c);
+      transform: scale(1.05);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    }
+  </style>
 </head>
+
 <body>
 
-    <button class="back-button" onclick="window.history.back()">Zpět</button>
+  <button class="back-button" onclick="window.history.back()">Zpět</button>
 
-    <div class="container">
-        <input type="text" id="search" placeholder="Vyhledat chaty..." oninput="filterChats()">
-        <div id="chatList">
-            <p id="noResultsMessage">Žádné chaty neodpovídají hledání.</p>
-        </div>
+  <div class="container">
+    <input type="text" id="search" placeholder="Vyhledat chaty...">
+    <div id="chatList">
+      <p id="noResultsMessage">Žádné chaty neodpovídají hledání.</p>
     </div>
+  </div>
 
-    <div id="chatModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" aria-label="Zavřít modální okno">×</span>
-            <h2>Informace o chatu</h2>
-            <p><strong>Jméno uživatele:</strong> <span id="modalUserName"></span></p>
-            <p><strong>Typ podpory:</strong> <span id="modalSupportType"></span></p>
-            <p><strong>Upřesnění problému:</strong> <span id="modalUserInfo"></span></p>
-            <p><strong>Vytvořeno:</strong> <span id="modalCreatedAt"></span></p>
-        </div>
+  <div id="chatModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close" aria-label="Zavřít modální okno">×</span>
+      <h2>Informace o chatu</h2>
+      <p><strong>Jméno uživatele:</strong> <span id="modalUserName"></span></p>
+      <p><strong>Typ podpory:</strong> <span id="modalSupportType"></span></p>
+      <p><strong>Upřesnění problému:</strong> <span id="modalUserInfo"></span></p>
+      <p><strong>Vytvořeno:</strong> <span id="modalCreatedAt"></span></p>
     </div>
+  </div>
 
-    <script type="module">
-        import { firebaseConfig } from './config.js';
+  <script type="module">
+    import { firebaseConfig } from './config.js';
 
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const db = firebase.database();
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
 
-        const chatList = document.getElementById("chatList");
-        const noResultsMessage = document.getElementById("noResultsMessage");
-        const chatsRef = db.ref("podpora_chats");
+    const chatList = document.getElementById("chatList");
+    const noResultsMessage = document.getElementById("noResultsMessage");
+    const chatsRef = db.ref("podpora_chats");
 
-        let allChats = [];
+    let allChats = [];
 
-        chatsRef.on("value", snapshot => {
-            chatList.innerHTML = "";
-            chatList.appendChild(noResultsMessage);
-            allChats = [];
+    chatsRef.on("value", snapshot => {
+      chatList.innerHTML = "";
+      chatList.appendChild(noResultsMessage);
+      allChats = [];
 
-            if (snapshot.exists()) {
-                snapshot.forEach(childSnapshot => {
-                    const chat = childSnapshot.val();
-                    const chatId = childSnapshot.key;
+      if (snapshot.exists()) {
+        snapshot.forEach(childSnapshot => {
+          const chat = childSnapshot.val();
+          const chatId = childSnapshot.key;
 
-                    let userName = chat.userName ? chat.userName : "Neznámý uživatel";
-                    let supportType = chat.supportType ? chat.supportType : "Neznámý typ podpory";
+          let userName = chat.userName ? chat.userName : "Neznámý uživatel";
+          let supportType = chat.supportType ? chat.supportType : "Neznámý typ podpory";
 
-                    const chatElement = document.createElement("div");
-                    chatElement.classList.add("chat-item");
-                    chatElement.innerHTML = `
-                        <span class="chat-title">${userName} | ${supportType}</span>
-                        <button class="options-btn" aria-label="Zobrazit informace o chatu"><i class="fas fa-ellipsis-v"></i></button>
-                    `;
+          const chatElement = document.createElement("div");
+          chatElement.classList.add("chat-item");
+          chatElement.innerHTML = `
+            <span class="chat-title">${userName} | ${supportType}</span>
+            <button class="options-btn" aria-label="Zobrazit informace o chatu"><i class="fas fa-ellipsis-v"></i></button>
+          `;
 
-                    chatElement.addEventListener("click", (e) => {
-                        if (e.target.closest(".options-btn")) return;
-                        window.location.href = `chat_podpora.html?id=${chatId}`;
-                    });
-                    const optionsBtn = chatElement.querySelector(".options-btn");
-                    optionsBtn.addEventListener("click", (e) => {
-                        e.stopPropagation();
-                        openOptions(e, chatId);
-                    });
+          chatElement.addEventListener("click", (e) => {
+            if (e.target.closest(".options-btn")) return;
+            window.location.href = `chat_podpora.html?id=${chatId}`;
+          });
 
-                    chatList.appendChild(chatElement);
+          const optionsBtn = chatElement.querySelector(".options-btn");
+          optionsBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            openOptions(e, chatId);
+          });
 
-                    allChats.push({
-                        element: chatElement,
-                        userName: userName.toLowerCase(),
-                        supportType: supportType.toLowerCase()
-                    });
-                });
-            }
+          chatList.appendChild(chatElement);
 
-            filterChats();
+          allChats.push({
+            element: chatElement,
+            userName: userName.toLowerCase(),
+            supportType: supportType.toLowerCase()
+          });
         });
+      }
 
-        function filterChats() {
-            const searchInput = document.getElementById("search").value.toLowerCase();
-            let visibleChatsCount = 0;
+      filterChats();
+    });
 
-            allChats.forEach(chat => {
-                const matchesSearch = chat.userName.includes(searchInput) || chat.supportType.includes(searchInput);
-                chat.element.style.display = matchesSearch ? "flex" : "none";
-                if (matchesSearch) visibleChatsCount++;
+    function filterChats() {
+      const searchInput = document.getElementById("search").value.toLowerCase();
+      let visibleChatsCount = 0;
+
+      allChats.forEach(chat => {
+        const matchesSearch = chat.userName.includes(searchInput) || chat.supportType.includes(searchInput);
+        chat.element.style.display = matchesSearch ? "flex" : "none";
+        if (matchesSearch) visibleChatsCount++;
+      });
+
+      noResultsMessage.style.display = visibleChatsCount === 0 && allChats.length > 0 ? "block" : "none";
+    }
+
+    document.getElementById("search").addEventListener("input", filterChats);
+
+    function openOptions(event, chatId) {
+      event.stopPropagation();
+
+      db.ref(`podpora_chats/${chatId}`).once("value", snapshot => {
+        if (snapshot.exists()) {
+          const chatData = snapshot.val();
+
+          document.getElementById("modalUserName").textContent = chatData.userName || "Neznámý uživatel";
+          document.getElementById("modalSupportType").textContent = chatData.supportType || "Neznámý typ podpory";
+          document.getElementById("modalUserInfo").textContent = chatData.userIssue || "Žádné informace";
+
+          const createdAt = chatData.createdAt;
+          if (createdAt) {
+            const date = new Date(createdAt);
+            const formattedDate = date.toLocaleString('cs-CZ', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
             });
+            document.getElementById("modalCreatedAt").textContent = formattedDate;
+          } else {
+            document.getElementById("modalCreatedAt").textContent = "Není k dispozici";
+          }
 
-            noResultsMessage.style.display = visibleChatsCount === 0 && allChats.length > 0 ? "block" : "none";
+          document.getElementById("chatModal").style.display = "flex";
+        } else {
+          alert("Chyba: Data nebyla nalezena.");
         }
+      }).catch(error => {
+        console.error("Chyba při načítání dat:", error);
+        alert("Nepodařilo se načíst informace o chatu. Zkuste to znovu.");
+      });
+    }
 
-        function openOptions(event, chatId) {
-            event.stopPropagation();
+    function closeModal() {
+      document.getElementById("chatModal").style.display = "none";
+    }
 
-            db.ref(`podpora_chats/${chatId}`).once("value", snapshot => {
-                if (snapshot.exists()) {
-                    const chatData = snapshot.val();
+    document.querySelector(".close").addEventListener("click", closeModal);
 
-                    document.getElementById("modalUserName").textContent = chatData.userName || "Neznámý uživatel";
-                    document.getElementById("modalSupportType").textContent = chatData.supportType || "Neznámý typ podpory";
-                    document.getElementById("modalUserInfo").textContent = chatData.userIssue || "Žádné informace";
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeModal();
+      }
+    });
 
-                    const createdAt = chatData.createdAt;
-                    if (createdAt) {
-                        const date = new Date(createdAt);
-                        const formattedDate = date.toLocaleString('cs-CZ', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        });
-                        document.getElementById("modalCreatedAt").textContent = formattedDate;
-                    } else {
-                        document.getElementById("modalCreatedAt").textContent = "Není k dispozici";
-                    }
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+    });
+  </script>
 
-                    document.getElementById("chatModal").style.display = "flex";
-                } else {
-                    alert("Chyba: Data nebyla nalezena.");
-                }
-            }).catch(error => {
-                console.error("Chyba při načítání dat:", error);
-                alert("Nepodařilo se načíst informace o chatu. Zkuste to znovu.");
-            });
-        }
-
-        function closeModal() {
-            document.getElementById("chatModal").style.display = "none";
-        }
-
-        document.querySelector(".close").addEventListener("click", closeModal);
-
-        document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape") {
-                closeModal();
-            }
-        });
-
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
-    </script>
 </body>
 </html>
