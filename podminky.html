@@ -1,238 +1,219 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SupportCZSK</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            text-align: left;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SupportCZSK</title>
+  <meta name="description" content="Podmínky služby SupportCZSK – přečtěte si pravidla používání naší podpůrné platformy." />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="Podmínky služby – SupportCZSK" />
+  <meta property="og:description" content="Základní pravidla, která platí pro používání našich služeb." />
 
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 15px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 0 0 10px 10px;
-            padding: 10px 40px;
-            z-index: 1000;
-        }
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      text-align: left;
+    }
 
-        nav {
-            display: flex;
-            gap: 20px;
-            margin-right: 60px;
-        }
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 10px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 0 0 10px 10px;
+      z-index: 1000;
+    }
 
-        nav a {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
-            text-decoration: none;
-        }
+    nav {
+      display: flex;
+      gap: 20px;
+      margin-right: 60px;
+    }
 
-        nav a:hover {
-            background: rgba(255, 255, 255, 0.4);
-            transform: scale(1.05);
-        }
+    nav a {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      text-decoration: none;
+    }
 
-        .content {
-            margin-top: 140px; 
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding-bottom: 50px;
-        }
+    nav a.active {
+      background-color: rgba(255, 255, 255, 0.5);
+      font-weight: bold;
+    }
 
-        .container {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 30px;
-            border-radius: 12px;
-            backdrop-filter: blur(15px);
-            max-width: 800px;
-            width: 90%;
-            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
-        }
+    nav a:hover {
+      background: rgba(255, 255, 255, 0.4);
+      transform: scale(1.05);
+    }
 
-        h2, h3 {
-            text-align: center;
-            font-size: 1.5em;
-            font-weight: bold;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-        }
+    .content {
+      margin-top: 140px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 50px;
+    }
 
-        p {
-            margin-bottom: 15px;
-            font-size: 1em;
-            text-align: justify;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-        }
+    .container {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 30px;
+      border-radius: 12px;
+      backdrop-filter: blur(15px);
+      max-width: 800px;
+      width: 90%;
+      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+    }
 
-        .last-modified {
-            font-size: 1.1em;
-            color: #ffffff;
-            text-align: center;
-            margin-top: 5px;
-            margin-bottom: 30px;
-        }
+    h2, h3 {
+      text-align: center;
+      font-size: 1.5em;
+      font-weight: bold;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
 
-        .section {
-            margin-bottom: 20px;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeIn 1s ease-out forwards;
-        }
+    p {
+      margin-bottom: 15px;
+      font-size: 1em;
+      text-align: justify;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
 
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+    .last-modified {
+      font-size: 1.1em;
+      color: #ffffff;
+      text-align: center;
+      margin: 5px 0 30px 0;
+    }
 
-        .section a {
-            color: #ff6f61;
-            text-decoration: none;
-            transition: color 0.3s ease, text-decoration 0.3s ease;
-        }
+    .section {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 1s ease-out forwards;
+    }
 
-        .section a:hover {
-            color: #d84b3b;
-            text-decoration: underline;
-        }
+    .section:last-child {
+      border-bottom: none;
+    }
 
-        .button-container button {
-            background: rgba(255, 255, 255, 0.3);
-            padding: 12px 24px;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-        .button-container button:hover {
-            background-color: rgba(255, 255, 255, 0.6);
-            transform: translateY(-5px);
-        }
+    strong {
+      color: #ffeeba;
+    }
 
-        .nav-buttons {
-            margin: 20px 0;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #ccc;
+      font-size: 0.9em;
+    }
 
-        .nav-buttons a {
-            padding: 12px 25px;
-            background-color: #ff6f61;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
-
-        .nav-buttons a:hover {
-            background-color: #d84b3b;
-            transform: translateY(-5px);
-        }
-
-    </style>
+    footer a {
+      color: #fff;
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Podmínky</h1>
-        <nav>
-            <a href="index.html">Zpět</a>
-        </nav>
-    </header>
+  <header>
+    <h1>Podmínky</h1>
+    <nav>
+      <a href="index.html" class="active">Zpět</a>
+    </nav>
+  </header>
 
-    <div class="content">
-        <div class="container">
-            <h2>Podmínky služby</h2>
+  <div class="content">
+    <div class="container">
+      <h2>Podmínky služby</h2>
+      <div class="last-modified">
+        <p>Poslední úprava: 10. července 2025</p>
+      </div>
 
-            <div class="last-modified">
-                <p>Poslední úprava: 23. března 2025</p>
-            </div>
+<div class="section">
+    <h3>1. Úvodní ustanovení</h3>
+    <p>Tyto všeobecné obchodní podmínky (dále jen „VOP“) upravují práva a povinnosti provozovatele webu (dále jen „Provozovatel“) a uživatelů webu (dále jen „Uživatelé“). Provozovatel se specializuje na poskytování pomoci pro osoby v nouzi a jejich blízké.</p>
+</div>
 
-            <div class="section" id="section1">
-                <h3>1. Přijetí podmínek služby</h3>
-                <p>Používáním tohoto webu (dále jen „Služby“) souhlasíte s těmito podmínkami služby (dále jen „Podmínky“). Pokud s těmito Podmínkami nesouhlasíte, nemáte oprávnění používat naše Služby.</p>
-            </div>
+<div class="section">
+    <h3>2. Poskytované služby</h3>
+    <p>Web SupportCZSK nabízí Uživatelům následující služby:</p>
+    <ul>
+        <li><strong>Podporu 24/7:</strong> Uživatelé mají možnost kontaktovat naší podporu která je online 24/7.</li>
+    </ul>
+</div>
 
-            <div class="section">
-                <h3>2. Účel služby</h3>
-                <p>Tento web je určen pro pomoc uživatelům, kteří se nacházejí v obtížných situacích a hledají pomoc nebo poradenství. Web poskytuje nástroje pro odesílání žádostí o pomoc (tikety), komunikaci s podporou a sledování statusu vašich žádostí.</p>
-            </div>
+<div class="section">
+    <h3>3. Zřeknutí se odpovědnosti</h3>
+    <p>Všechny informace poskytované na webu SupportCZSK mají <strong>pouze informativní charakter</strong> a neslouží jako náhrada odborné pomoci, lékařské diagnostiky, psychoterapie nebo právního poradenství. Provozovatel se snaží o aktuálnost a správnost dat, ale nemůže zaručit jejich stoprocentní přesnost v každém okamžiku.</p>
+    <p>V případě akutní krizové situace nebo ohrožení života či zdraví je <strong>nezbytné okamžitě kontaktovat záchranné složky (např. tísňovou linku 112, Policii ČR 158, Záchrannou službu 155)</strong> nebo specializovaná krizová centra. Web SupportCZSK není určen pro řešení okamžitých nouzových stavů.</p>
+    <p>Provozovatel nenese odpovědnost za jakákoli rozhodnutí nebo kroky, které Uživatelé učiní na základě informací získaných z tohoto webu. Každý Uživatel nese plnou odpovědnost za své jednání.</p>
+</div>
 
-            <div class="section">
-                <h3>3. Použití služby</h3>
-                <p>Služby lze využívat pouze pro zákonné účely, jako je získávání podpory a pomoc při problémech. Zakázáno je použití Služby k šíření nelegálního, urážlivého, škodlivého nebo neetického obsahu. Jakákoli činnost, která by mohla poškodit ostatní uživatele nebo webové stránky, je přísně zakázána.</p>
-            </div>
+<div class="section">
+    <h3>4. Povinnosti Uživatele</h3>
+    <p>Uživatel se zavazuje používat web v souladu s platnými právními předpisy České republiky a těmito VOP. Je zakázáno zneužívat web k nezákonným, obtěžujícím, pomlouvačným nebo jinak nevhodným aktivitám.</p>
+    <p>Při komunikaci na fóru nebo v jiných interaktivních částech webu se Uživatel zavazuje chovat slušně, s respektem k ostatním Uživatelům a nepoužívat urážlivý, vulgární nebo diskriminační jazyk.</p>
+</div>
 
-            <div class="section">
-                <h3>4. Odpovědnost uživatele</h3>
-                <p>Uživatelé jsou plně odpovědní za všechny aktivity prováděné jejich účtem. Jakékoliv porušení těchto podmínek může vést k dočasnému nebo trvalému zablokování účtu. Uživatelé jsou povinni zdržet se jakýchkoli aktivit, které by mohly poškodit jiného uživatele nebo službu.</p>
-            </div>
+<div class="section">
+    <h3>5. Ochrana osobních údajů</h3>
+    <p>Ochrana osobních údajů Uživatelů je pro Provozovatele prioritou. Veškeré nakládání s osobními údaji se řídí <strong>Zásadami ochrany osobních údajů</strong>.</p>
+</div>
 
-            <div class="section">
-                <h3>5. Změny podmínek</h3>
-                <p>Vyhrazujeme si právo aktualizovat nebo měnit tyto Podmínky kdykoli. Změny budou zveřejněny na stránce s Podmínkami služby. Doporučujeme pravidelně kontrolovat tuto stránku. Pokračující používání Služeb po změnách znamená souhlas s novými podmínkami.</p>
-            </div>
+<div class="section">
+    <h3>6. Autorská práva</h3>
+    <p>Veškerý obsah webu SupportCZSK, včetně textů, grafiky, designu, fotografií a softwaru, je chráněn autorským právem Provozovatele nebo je Provozovatel oprávněn k jeho užívání. Bez předchozího písemného souhlasu Provozovatele je zakázáno jakékoli kopírování, šíření nebo jiné užití obsahu webu pro komerční účely.</p>
+</div>
 
-            <div class="section">
-                <h3>6. Odpovědnost a omezení</h3>
-                <p>Tento web poskytuje Služby „jak jsou“, bez jakýchkoli záruk. Nezaručujeme, že Služby budou vždy dostupné nebo bez chyb. Nepřebíráme odpovědnost za žádné přímé, nepřímé nebo následné škody vyplývající z používání našich Služeb.</p>
-            </div>
+<div class="section">
+    <h3>7. Změny podmínek</h3>
+    <p>Provozovatel si vyhrazuje právo tyto VOP kdykoli jednostranně měnit. Změny nabývají účinnosti zveřejněním na webu. Uživatel je povinen pravidelně kontrolovat aktuální znění VOP. Dalším používáním webu po zveřejnění změn vyjadřuje Uživatel souhlas s těmito změnami.</p>
+</div>
 
-            <div class="section">
-                <h3>7. Spory a rozhodčí řízení</h3>
-                <p>V případě sporu mezi námi a uživatelem se strany dohodly na rozhodčím řízení, které proběhne individuálně, nikoli jako hromadná žaloba. Tento postup je zaměřen na rychlé a efektivní vyřešení problémů.</p>
-            </div>
+<div class="section">
+    <h3>8. Závěrečná ustanovení</h3>
+    <p>Tyto VOP se řídí právním řádem České republiky.</p>
+    <p>Jakékoli spory vyplývající z těchto VOP nebo v souvislosti s nimi budou řešeny.</p>
+    <p>Pokud by se jakékoli ustanovení těchto VOP stalo neplatným nebo nevymahatelným, nebude to mít vliv na platnost a vymahatelnost ostatních ustanovení.</p>
+</div>
 
-            <div class="section">
-                <h3>8. Použití obsahu a intelektuální vlastnictví</h3>
-                <p>Veškerý obsah na tomto webu, včetně textů, obrázků, grafiky a softwaru, je chráněn autorským právem a patří nám nebo našim partnerům. Obsah může být použit pouze pro osobní účely nebo v souladu s pokyny, které jsme zveřejnili.</p>
-            </div>
 
-            <div class="section">
-                <h3>9. Práva a povinnosti služby</h3>
-                <p>Vyhrazujeme si právo zrušit nebo omezit přístup k Službám, a to bez předchozího upozornění, pokud se domníváme, že došlo k porušení těchto Podmínek. Můžeme také upravit nebo změnit Služby, včetně funkcionalit a obsahu.</p>
-            </div>
+  <footer>
+    &copy; 2025 SupportCZSK – Všechna práva vyhrazena<br />
+  </footer>
 
-            <div class="section">
-                <h3>10. Ochrana dětí</h3>
-                <p>Naše Služby nejsou určeny pro osoby mladší 13 let. Pokud máte méně než 13 let, musíte mít souhlas rodičů nebo zákonného zástupce, aby vám umožnili přístup k Službám.</p>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-});
-    </script>
+  <script>
+    document.addEventListener('contextmenu', function (e) {
+      e.preventDefault();
+    });
+  </script>
 </body>
 </html>
