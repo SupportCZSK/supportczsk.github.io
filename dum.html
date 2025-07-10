@@ -1,469 +1,489 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SupportCZSK</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(to right, #667eea, #764ba2);
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: white;
-        }
-        .development-notice {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            color: white;
-            font-size: 16px;
-            z-index: 1002;
-            animation: float 3s ease-in-out infinite;
-        }
-        @keyframes float {
-            0% {
-                transform: translateX(-50%) translateY(0);
-            }
-            50% {
-                transform: translateX(-50%) translateY(20px);
-            }
-            100% {
-                transform: translateX(-50%) translateY(0);
-            }
-        }
-        .container {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            max-width: 400px;
-            width: 90%;
-            position: relative;
-        }
-        h1 {
-            font-size: 28px;
-            margin-bottom: 20px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        button {
-            background: #ff6b6b;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s ease, transform 0.2s ease;
-            width: 100%;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        button:hover {
-            background: #e63946;
-            transform: translateY(-2px);
-        }
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 1000;
-        }
-        .modal {
-            display: none;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 25px;
-            border-radius: 12px;
-            color: white;
-            width: 90%;
-            max-width: 450px;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(12px);
-            z-index: 1001;
-            animation: slideIn 0.3s ease;
-        }
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translate(-50%, -60%);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, -50%);
-            }
-        }
-        .modal h2 {
-            font-size: 24px;
-            margin-bottom: 15px;
-            text-align: center;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-        }
-        #support-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-        }
-        .support-type-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            transition: background 0.3s ease, transform 0.2s ease;
-        }
-        .support-type-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-            position: relative;
-        }
-        .form-group label {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 5px;
-            display: block;
-            color: #ddd;
-        }
-        input, textarea {
-            width: calc(100% - 20px);
-            margin-left: auto;
-            margin-right: auto;
-            padding: 12px;
-            border-radius: 8px;
-            border: none;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            font-size: 14px;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-            transition: background 0.3s ease, box-shadow 0.3s ease;
-        }
-        input:focus, textarea:focus {
-            background: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-            outline: none;
-        }
-        input::placeholder, textarea::placeholder {
-            color: #aaa;
-        }
-        textarea {
-            resize: none;
-            height: 120px;
-        }
-        .char-counter {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            font-size: 12px;
-            color: #ccc;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-        #submit-support {
-            background: #5865f2;
-            padding: 12px;
-            font-size: 16px;
-        }
-        #submit-support:hover {
-            background: #4752c4;
-        }
-        .modal p {
-            font-size: 14px;
-            color: #ddd;
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
-        .loader {
-            font-size: 14px;
-            color: white;
-            text-align: center;
-            margin-top: 10px;
-        }
-        .help-icon {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 30px;
-            height: 30px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 16px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-            transition: background 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        .help-icon:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.1);
-        }
-        .modal-close-btn {
-            background: #ff6b6b;
-            padding: 10px;
-            font-size: 14px;
-            margin-top: 10px;
-        }
-        .modal-close-btn:hover {
-            background: #e63946;
-        }
-        @media (max-width: 600px) {
-            .development-notice {
-                font-size: 14px;
-                padding: 8px 15px;
-            }
-            .container {
-                width: 95%;
-                padding: 15px;
-            }
-            .modal {
-                width: 95%;
-                padding: 20px;
-            }
-            .modal h2 {
-                font-size: 20px;
-            }
-            #support-options {
-                grid-template-columns: 1fr;
-            }
-            .support-type-btn {
-                font-size: 13px;
-            }
-            input, textarea {
-                font-size: 13px;
-                width: calc(100% - 30px);
-            }
-            .char-counter {
-                right: 26px;
-            }
-            .help-icon {
-                width: 25px;
-                height: 25px;
-                font-size: 14px;
-            }
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SupportCZSK</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body, html {
+    margin: 0; padding: 0; height: 100%;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to right, #667eea, #764ba2);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .development-notice {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,0.2);
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px);
+    font-size: 16px;
+    z-index: 1002;
+    animation: float 3s ease-in-out infinite;
+    text-align: center;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(20px); }
+  }
+
+  .container {
+    max-width: 900px;
+    width: 100%;
+    margin-top: 100px;
+    padding: 20px;
+    text-align: center;
+  }
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+  #support-btn {
+    background: #ff6b6b;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.25rem;
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.2s ease;
+    margin-bottom: 50px;
+    width: 100%;
+    max-width: 400px;
+  }
+  #support-btn:hover {
+    background: #e63946;
+    transform: translateY(-2px);
+  }
+
+  #support-options-modal {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+  .sections-wrapper {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+  }
+
+  .support-types {
+    background: rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    backdrop-filter: blur(12px);
+    text-align: left;
+  }
+  .support-types h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+  }
+  #support-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+  }
+  .support-type-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: default;
+    user-select: none;
+    transition: background 0.3s ease;
+    text-align: center;
+  }
+  .support-type-btn:hover {
+    background: rgba(255,255,255,0.3);
+  }
+
+  .helpful-tips {
+    background: rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    backdrop-filter: blur(12px);
+    text-align: left;
+  }
+  .helpful-tips h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+  }
+  .helpful-tips ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .helpful-tips ul li {
+    margin-bottom: 12px;
+  }
+
+  .overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 1000;
+  }
+  .modal {
+    display: none;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.15);
+    padding: 25px;
+    border-radius: 12px;
+    color: white;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    backdrop-filter: blur(12px);
+    z-index: 1001;
+    animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn {
+    from {opacity: 0; transform: translate(-50%, -60%);}
+    to {opacity: 1; transform: translate(-50%, -50%);}
+  }
+  .modal h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  .modal p {
+    font-size: 14px;
+    color: #ddd;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+    position: relative;
+  }
+  .form-group label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+    color: #ddd;
+  }
+  input, textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    font-size: 14px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+  input:focus, textarea:focus {
+    background: rgba(255,255,255,0.25);
+    box-shadow: 0 0 8px rgba(255,255,255,0.3);
+    outline: none;
+  }
+  textarea {
+    resize: none;
+    height: 120px;
+  }
+  .char-counter {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 12px;
+    color: #ccc;
+    background: rgba(0,0,0,0.3);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  #submit-support {
+    background: #5865f2;
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    width: 100%;
+  }
+  #submit-support:hover {
+    background: #4752c4;
+  }
+  .modal-close-btn {
+    background: #ff6b6b;
+    padding: 10px;
+    font-size: 14px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+  }
+  .modal-close-btn:hover {
+    background: #e63946;
+  }
+
+  .loader {
+    font-size: 14px;
+    color: white;
+    text-align: center;
+    margin-top: 10px;
+    display: none;
+  }
+
+  @media (max-width: 600px) {
+    #support-btn {
+      font-size: 1.1rem;
+      max-width: 100%;
+      margin-bottom: 30px;
+    }
+    .support-types h2, .helpful-tips h2 {
+      font-size: 1.4rem;
+    }
+    .support-type-btn {
+      font-size: 0.9rem;
+      padding: 12px;
+    }
+    .helpful-tips ul {
+      font-size: 0.9rem;
+    }
+  }
+
+</style>
 </head>
 <body>
-    <div class="development-notice">
-        Tento web je stále ve vývoji
-    </div>
 
-    <div class="container">
-        <h1>Vítejte na stránce podpory</h1>
-        <button id="support-btn">Potřebuji podporu</button>
-        <div class="help-icon" id="help-icon" title="Nápověda">?</div>
-    </div>
+<div class="development-notice">Tento web je stále ve vývoji</div>
 
-    <div class="overlay" id="overlay"></div>
+<div class="container">
+  <h1>Vítejte na stránce podpory</h1>
+  <button id="support-btn">Potřebuji podporu</button>
 
-    <div class="modal" id="support-form">
-        <h2>Vyberte typ podpory</h2>
-        <div id="support-options">
-            <button class="support-type-btn" data-support-type="Obecná podpora">Obecná podpora</button>
-            <button class="support-type-btn" data-support-type="Technická podpora">Technická podpora</button>
-            <button class="support-type-btn" data-support-type="Kritická podpora">Kritická podpora</button>
-            <button class="support-type-btn" data-support-type="Emoční podpora">Emoční podpora</button>
-            <button class="support-type-btn" data-support-type="Zdravotní podpora">Zdravotní podpora</button>
-            <button class="support-type-btn" data-support-type="Rodinné problémy">Rodinné problémy</button>
-            <button class="support-type-btn" data-support-type="Osamělost a izolace">Osamělost a izolace</button>
-            <button class="support-type-btn" data-support-type="Vztahy a láska">Vztahy a láska</button>
-        </div>
-    </div>
+  <div class="sections-wrapper">
+    <section class="support-types" aria-label="Typy podpory">
+      <h2>Jaké typy podpory u nás najdete a co znamenají</h2>
+      <div id="support-options">
+        <div class="support-type-btn">Obecná podpora</div>
+        <div class="support-type-btn">Technická podpora</div>
+        <div class="support-type-btn">Kritická podpora</div>
+        <div class="support-type-btn">Emoční podpora</div>
+        <div class="support-type-btn">Zdravotní podpora</div>
+        <div class="support-type-btn">Rodinné problémy</div>
+        <div class="support-type-btn">Osamělost a izolace</div>
+        <div class="support-type-btn">Vztahy a láska</div>
+      </div>
+    </section>
 
-    <div class="modal" id="support-details-form">
-        <h2>Formulář podpory</h2>
-        <p>Tento formulář nám pomůže poskytnout vám rychlou a efektivní podporu. Vaše soukromí je pro nás prioritou – vše, co zde uvedete, zůstane pouze mezi vámi a naším týmem podpory a nebude sdíleno s třetími stranami.</p>
-        <div class="form-group">
-            <label for="user-name">Vaše jméno</label>
-            <input type="text" id="user-name" placeholder="Zadejte své jméno" required>
-        </div>
-        <div class="form-group">
-            <label for="user-issue">Popište svůj problém</label>
-            <textarea id="user-issue" maxlength="1000" placeholder="Detailně popište, s čím potřebujete pomoci" required></textarea>
-            <div class="char-counter" id="char-counter">0 / 1000</div>
-        </div>
-        <button id="submit-support">Vytvořit ticket</button>
-        <div class="loader" id="loader" style="display:none;">Načítání...</div>
-    </div>
+    <section class="helpful-tips" aria-label="Jak zvládat různé situace">
+      <h2>Jak zvládat různé situace</h2>
+      <ul>
+        <li><strong>Časté hádky ve vztahu:</strong> Zkuste si najít čas na klidný rozhovor, naslouchejte jeden druhému a vyhýbejte se obviňování.</li>
+        <li><strong>Stres a úzkost:</strong> Praktikujte relaxační techniky jako hluboké dýchání nebo meditaci.</li>
+        <li><strong>Osamělost:</strong> Vyhledejte komunitní aktivity nebo se spojte s blízkými přáteli či rodinou.</li>
+        <li><strong>Rodinné problémy:</strong> Nebojte se požádat o pomoc odborníka, např. rodinného poradce.</li>
+        <li><strong>Emoční vyhoření:</strong> Dopřejte si odpočinek a nastavte si hranice v pracovním a osobním životě.</li>
+      </ul>
+    </section>
+  </div>
+</div>
 
-    <div class="modal" id="help-modal">
-        <h2>Nápověda</h2>
-        <p>Vítejte na stránce podpory! Níže najdete stručný návod, jak tuto stránku používat:</p>
-        <ul style="text-align: left; font-size: 14px; color: #ddd; line-height: 1.6; margin-bottom: 20px;">
-            <li>Klikněte na tlačítko <strong>"Potřebuji podporu"</strong> pro vytvoření nového ticketu.</li>
-            <li>Vyberte typ podpory, který nejlépe odpovídá vašemu problému (např. Technická podpora, Emoční podpora).</li>
-            <li>Vyplňte formulář s vaším jménem a popisem problému (minimálně 10 znaků, maximálně 1000).</li>
-            <li>Po odeslání formuláře budete přesměrováni do chatu, kde můžete komunikovat s naším týmem podpory.</li>
-            <li>Vaše údaje jsou soukromé a nebudou sdíleny s třetími stranami.</li>
-        </ul>
-        <button class="modal-close-btn" id="close-help-modal">Zavřít</button>
-    </div>
+<div class="overlay" id="overlay"></div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
+<div class="modal" id="support-form">
+  <h2>Vyberte typ podpory</h2>
+  <div id="support-options-modal">
+    <button class="support-type-btn" data-support-type="Obecná podpora">Obecná podpora</button>
+    <button class="support-type-btn" data-support-type="Technická podpora">Technická podpora</button>
+    <button class="support-type-btn" data-support-type="Kritická podpora">Kritická podpora</button>
+    <button class="support-type-btn" data-support-type="Emoční podpora">Emoční podpora</button>
+    <button class="support-type-btn" data-support-type="Zdravotní podpora">Zdravotní podpora</button>
+    <button class="support-type-btn" data-support-type="Rodinné problémy">Rodinné problémy</button>
+    <button class="support-type-btn" data-support-type="Osamělost a izolace">Osamělost a izolace</button>
+    <button class="support-type-btn" data-support-type="Vztahy a láska">Vztahy a láska</button>
+  </div>
+  <button class="modal-close-btn" id="close-support-form">Zavřít</button>
+</div>
 
-    <script type="module">
-        import { firebaseConfig } from './config.js';
+<div class="modal" id="support-details-form">
+  <h2>Formulář podpory</h2>
+  <p>Tento formulář nám pomůže poskytnout vám rychlou a efektivní podporu. Vaše soukromí je pro nás prioritou – vše, co zde uvedete, zůstane pouze mezi vámi a naším týmem podpory a nebude sdíleno s třetími stranami.</p>
+  <div class="form-group">
+    <label for="user-name">Vaše jméno</label>
+    <input type="text" id="user-name" placeholder="Zadejte své jméno" required />
+  </div>
+  <div class="form-group">
+    <label for="user-issue">Popište svůj problém</label>
+    <textarea id="user-issue" maxlength="1000" placeholder="Detailně popište, s čím potřebujete pomoci" required></textarea>
+    <div class="char-counter" id="char-counter">0 / 1000</div>
+  </div>
+  <button id="submit-support">Vytvořit ticket</button>
+  <div class="loader" id="loader">Načítání...</div>
+  <button class="modal-close-btn" id="close-support-details">Zavřít</button>
+</div>
 
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
+
+<script type="module">
+  import { firebaseConfig } from './config.js';
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  const db = firebase.database();
+
+  const sanitizeInput = (input) => {
+    const div = document.createElement('div');
+    div.textContent = input;
+    return div.innerHTML.replace(/[<>"'&]/g, '');
+  };
+
+  const overlay = document.getElementById('overlay');
+  const supportBtn = document.getElementById('support-btn');
+  const supportForm = document.getElementById('support-form');
+  const supportDetailsForm = document.getElementById('support-details-form');
+  const submitSupport = document.getElementById('submit-support');
+  const userIssueInput = document.getElementById('user-issue');
+  const charCounter = document.getElementById('char-counter');
+
+  const closeSupportFormBtn = document.getElementById('close-support-form');
+  const closeSupportDetailsBtn = document.getElementById('close-support-details');
+
+  const supportTypeButtons = document.querySelectorAll('#support-options-modal .support-type-btn');
+
+  const userID = localStorage.getItem('userId') || `user_${Math.random().toString(36).substr(2, 9)}`;
+  localStorage.setItem('userId', userID);
+
+  let selectedSupportType = '';
+
+  supportBtn.addEventListener('click', async () => {
+    try {
+      const snapshot = await db.ref('chats_list').orderByChild('userId').equalTo(userID).once('value');
+      if (snapshot.exists()) {
+        const chatData = Object.values(snapshot.val())[0];
+        window.location.href = `chat.html?id=${encodeURIComponent(chatData.chatID)}`;
+      } else {
+        overlay.style.display = 'block';
+        supportForm.style.display = 'block';
+      }
+    } catch (error) {
+      console.error('Chyba při kontrole podpory:', error);
+      alert('Došlo k chybě při kontrole stavu podpory. Zkuste to znovu později.');
+    }
+  });
+
+  supportTypeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      selectedSupportType = button.getAttribute('data-support-type');
+      supportForm.style.display = 'none';
+      supportDetailsForm.style.display = 'block';
+    });
+  });
+
+  closeSupportFormBtn.addEventListener('click', () => {
+    overlay.style.display = 'none';
+    supportForm.style.display = 'none';
+  });
+  closeSupportDetailsBtn.addEventListener('click', () => {
+    overlay.style.display = 'none';
+    supportDetailsForm.style.display = 'none';
+  });
+
+  overlay.addEventListener('click', () => {
+    overlay.style.display = 'none';
+    supportForm.style.display = 'none';
+    supportDetailsForm.style.display = 'none';
+  });
+
+  submitSupport.addEventListener('click', async () => {
+    const userName = sanitizeInput(document.getElementById('user-name').value.trim());
+    const userIssue = sanitizeInput(userIssueInput.value.trim());
+
+    if (!userName || !userIssue) {
+      alert('Prosím, vyplňte všechna pole!');
+      return;
+    }
+    if (userName.length > 50) {
+      alert('Jméno může mít maximálně 50 znaků.');
+      return;
+    }
+    if (userIssue.length < 10) {
+      alert('Popis problému musí mít alespoň 10 znaků.');
+      return;
+    }
+
+    const loader = document.getElementById('loader');
+    loader.style.display = 'block';
+    submitSupport.disabled = true;
+
+    try {
+      const chatID = `chat_${Math.random().toString(36).substr(2, 9)}`;
+      const createdAt = Date.now();
+
+      await db.ref().update({
+        [`chats_list/${chatID}`]: {
+          chatID,
+          userId: userID,
+          userName,
+          userIssue,
+          supportType: selectedSupportType,
+          createdAt
+        },
+        [`podpora_chats/${chatID}`]: {
+          chatID,
+          userId: userID,
+          userName,
+          userIssue,
+          supportType: selectedSupportType,
+          createdAt
         }
-        const db = firebase.database();
+      });
 
-        const sanitizeInput = (input) => {
-            const div = document.createElement('div');
-            div.textContent = input;
-            return div.innerHTML.replace(/[<>"'&]/g, '');
-        };
+      window.location.href = `chat.html?id=${encodeURIComponent(chatID)}`;
+    } catch (error) {
+      console.error('Chyba při vytváření ticketu:', error);
+      alert(`Nepodařilo se vytvořit ticket: ${error.message}. Zkuste to znovu později.`);
+    } finally {
+      loader.style.display = 'none';
+      submitSupport.disabled = false;
+    }
+  });
 
-        const overlay = document.getElementById('overlay');
-        const supportBtn = document.getElementById('support-btn');
-        const supportForm = document.getElementById('support-form');
-        const supportDetailsForm = document.getElementById('support-details-form');
-        const submitSupport = document.getElementById('submit-support');
-        const userIssueInput = document.getElementById('user-issue');
-        const charCounter = document.getElementById('char-counter');
-        const helpIcon = document.getElementById('help-icon');
-        const helpModal = document.getElementById('help-modal');
-        const closeHelpModalBtn = document.getElementById('close-help-modal');
+  charCounter.textContent = '0 / 1000';
+  userIssueInput.addEventListener('input', () => {
+    const maxLength = 1000;
+    const currentLength = userIssueInput.value.length;
+    charCounter.textContent = `${currentLength} / ${maxLength}`;
+  });
 
-        const userID = localStorage.getItem('userId') || `user_${Math.random().toString(36).substr(2, 9)}`;
-        localStorage.setItem('userId', userID);
-
-        let selectedSupportType = '';
-
-        helpIcon.addEventListener('click', () => {
-            overlay.style.display = 'block';
-            helpModal.style.display = 'block';
-        });
-
-        closeHelpModalBtn.addEventListener('click', () => {
-            overlay.style.display = 'none';
-            helpModal.style.display = 'none';
-        });
-
-        overlay.addEventListener('click', () => {
-            overlay.style.display = 'none';
-            helpModal.style.display = 'none';
-            supportForm.style.display = 'none';
-            supportDetailsForm.style.display = 'none';
-        });
-
-        supportBtn.addEventListener('click', async () => {
-            try {
-                const snapshot = await db.ref('chats_list').orderByChild('userId').equalTo(userID).once('value');
-                if (snapshot.exists()) {
-                    const chatData = Object.values(snapshot.val())[0];
-                    window.location.href = `chat.html?id=${encodeURIComponent(chatData.chatID)}`;
-                } else {
-                    overlay.style.display = 'block';
-                    supportForm.style.display = 'block';
-                }
-            } catch (error) {
-                console.error('Chyba při kontrole podpory:', error);
-                alert('Došlo k chybě při kontrole stavu podpory. Zkuste to znovu později.');
-            }
-        });
-
-        document.querySelectorAll('.support-type-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                selectedSupportType = button.getAttribute('data-support-type');
-                supportForm.style.display = 'none';
-                supportDetailsForm.style.display = 'block';
-            });
-        });
-
-        submitSupport.addEventListener('click', async () => {
-            const userName = sanitizeInput(document.getElementById('user-name').value.trim());
-            const userIssue = sanitizeInput(document.getElementById('user-issue').value.trim());
-
-            if (!userName || !userIssue) {
-                alert('Prosím, vyplňte všechna pole!');
-                return;
-            }
-            if (userName.length > 50) {
-                alert('Jméno může mít maximálně 50 znaků.');
-                return;
-            }
-            if (userIssue.length < 10) {
-                alert('Popis problému musí mít alespoň 10 znaků.');
-                return;
-            }
-
-            const loader = document.getElementById('loader');
-            loader.style.display = 'block';
-            submitSupport.disabled = true;
-
-            try {
-                const chatID = `chat_${Math.random().toString(36).substr(2, 9)}`;
-                const createdAt = Date.now();
-
-                await db.ref().update({
-                    [`chats_list/${chatID}`]: {
-                        chatID,
-                        userId: userID,
-                        userName,
-                        userIssue,
-                        supportType: selectedSupportType,
-                        createdAt
-                    },
-                    [`podpora_chats/${chatID}`]: {
-                        chatID,
-                        userId: userID,
-                        userName,
-                        userIssue,
-                        supportType: selectedSupportType,
-                        createdAt
-                    }
-                });
-
-                window.location.href = `chat.html?id=${encodeURIComponent(chatID)}`;
-            } catch (error) {
-                console.error('Chyba při vytváření ticketu:', error);
-                alert(`Nepodařilo se vytvořit ticket: ${error.message}. Zkuste to znovu později.`);
-            } finally {
-                loader.style.display = 'none';
-                submitSupport.disabled = false;
-            }
-        });
-
-        charCounter.textContent = '0 / 1000';
-        userIssueInput.addEventListener('input', () => {
-            const maxLength = 1000;
-            const currentLength = userIssueInput.value.length;
-            charCounter.textContent = `${currentLength} / ${maxLength}`;
-        });
-
-        document.addEventListener('contextmenu', function(e) {
+  document.addEventListener('contextmenu', function(e) {
     e.preventDefault();
-});
-    </script>
+  });
+</script>
+
 </body>
 </html>
